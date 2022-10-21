@@ -1,7 +1,7 @@
 package HttpServer
 
 import (
-	"UAutoProfiler/Logs"
+	"UAutoServer/Logs"
 	"fmt"
 	"io"
 	"net"
@@ -13,7 +13,7 @@ func ListenAndServer(address string) {
 	if err != nil {
 		Logs.Print(fmt.Sprintf("listen err: %v", err))
 	}
-	Logs.Print("服务器启动成功！！！\n")
+	Logs.Print("Http服务器启动成功！！！\n")
 	defer listener.Close()
 
 	for {
@@ -29,7 +29,7 @@ func ListenAndServer(address string) {
 }
 
 func Handle(conn net.Conn) {
-	Logs.Print("客户端连接成功----")
+	Logs.Print("Http请求客户端连接成功----")
 	//decoder := mahonia.NewDecoder("gbk")
 	//decoder.NewReader()
 	var resultData string

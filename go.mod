@@ -1,3 +1,3 @@
-module UAutoProfiler
+module UAutoServer
 
 go 1.18

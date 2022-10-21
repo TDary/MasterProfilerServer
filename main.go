@@ -1,7 +1,7 @@
 package main
 
 import (
-	"UAutoProfiler/AnalyzeServer"
+	"UAutoServer/AnalyzeServer"
 	"fmt"
 )
 

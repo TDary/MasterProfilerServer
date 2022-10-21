@@ -1,8 +1,8 @@
 package RbQServer
 
 import (
-	"UAutoProfiler/Logs"
-	"UAutoProfiler/queue"
+	"UAutoServer/Logs"
+	"UAutoServer/queue"
 	"context"
 )
 

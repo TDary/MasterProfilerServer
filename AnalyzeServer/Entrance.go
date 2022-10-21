@@ -1,7 +1,7 @@
 package AnalyzeServer
 
-import "UAutoProfiler/HttpServer"
+import "UAutoServer/HttpServer"
 
 func Run() {
-	HttpServer.ListenAndServer("10.11.145.198:8201")
+	HttpServer.ListenAndServer("10.11.144.31:8201")
 }
