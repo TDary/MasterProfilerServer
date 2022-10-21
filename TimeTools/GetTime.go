@@ -1,4 +1,4 @@
-package GetTimes
+package TimeTools
 
 import (
 	"time"

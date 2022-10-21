@@ -1,4 +1,4 @@
-package LogC
+package Logs
 
 import (
 	"log"

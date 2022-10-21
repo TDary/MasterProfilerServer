@@ -1,20 +1,19 @@
 package main
 
 import (
-	LogC "UAutoProfiler/LogTools"
-	GetTimes "UAutoProfiler/TimeTools"
+	"UAutoProfiler/AnalyzeServer"
 	"fmt"
-	"time"
 )
 
 func main() {
 	fmt.Print("Welcome to use UAutoServer")
-	lastTime := GetTimes.GetLogicTime()
-	for true {
-		currentTime := GetTimes.GetLogicTime()
-		deltaTime := currentTime.Unix() - lastTime.Unix()
-		time.Sleep(1 * time.Second)
-		LogC.Print(deltaTime)
-		lastTime = currentTime
-	}
+	AnalyzeServer.Run()
+	// lastTime := TimeTools.GetLogicTime()
+	// for true {
+	// 	currentTime := TimeTools.GetLogicTime()
+	// 	deltaTime := currentTime.Unix() - lastTime.Unix()
+	// 	time.Sleep(1 * time.Second)
+	// 	Logs.Print(deltaTime)
+	// 	lastTime = currentTime
+	// }
 }
