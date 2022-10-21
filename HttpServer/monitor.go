@@ -2,79 +2,71 @@ package HttpServer
 
 import (
 	"UAutoServer/Logs"
+	"bytes"
 	"fmt"
-	"io"
 	"net"
+	"net/url"
 )
 
+var AllProfilerClient map[string]string
+
 func ListenAndServer(address string) {
-	//绑定监听地址
-	listener, err := net.Listen("tcp", address)
+	// tcp 连接，监听 8021 端口
+	monitor, err := net.Listen("tcp", address)
 	if err != nil {
-		Logs.Print(fmt.Sprintf("listen err: %v", err))
+		Logs.Error(err)
 	}
-	Logs.Print("Http服务器启动成功！！！\n")
-	defer listener.Close()
 
+	// 死循环，每当遇到连接时，调用 handle
 	for {
-		//Accept 会一直阻塞直到有新的连接进来或者listen中断才会返回
-		conn, err := listener.Accept()
+		client, err := monitor.Accept()
 		if err != nil {
-			//通常由于listener被关闭无法继续监听导致的错误
-			Logs.Print(fmt.Sprintf("accept err: %v", err))
+			Logs.Print(err)
+			continue
 		}
-		//开启新的 goroutine处理该连接
-		go Handle(conn)
+		//每当有一个连接就使用协程
+		go Handle(client)
 	}
 }
 
-func Handle(conn net.Conn) {
-	Logs.Print("Http请求客户端连接成功----")
-	//decoder := mahonia.NewDecoder("gbk")
-	//decoder.NewReader()
-	var resultData string
-	for {
-		tmp := make([]byte, 1024*1024)
-		msg, err := conn.Read(tmp)
-		if err != nil {
-			//通常遇到的错误是连接中断或被关闭，用io.EOF表示
-			if err == io.EOF {
-				Logs.Print("connection close")
-			} else {
-				Logs.Print(err)
-			}
-			return
-		}
-		resultData += string(tmp[:msg])
-		if tmp[msg-1] == '\n' {
-			//DealReceivedMessage(resultData)
-			resultData = ""
-			b := []byte("Aceept Success.")
-			conn.Write(b)
-		}
-		//fmt.Print(resultData, "已读取")
-		//DealReceivedMessage(resultData)
-		// b := []byte(msg)
-		// //将收到的信息发送给客户端
-		// conn.Write(b)
+func Handle(client net.Conn) {
+	if client == nil {
+		return
 	}
+	defer client.Close()
+
+	Logs.Print(client.RemoteAddr())
+
+	// 用来存放客户端数据的缓冲区
+	var b [1024]byte
+	//从客户端获取数据
+	_, err := client.Read(b[:])
+	if err != nil {
+		Logs.Print(err)
+		return
+	}
+
+	var method, URL string
+	// 从客户端数据读入 method，url
+	fmt.Sscanf(string(b[:bytes.IndexByte(b[:], '\n')]), "%s%s", &method, &URL)
+	//获取到绝对url。ip端口号后面的内容
+	hostPortURL, err := url.Parse(URL)
+	if err != nil {
+		Logs.Print(err)
+		return
+	}
+	DealReceivedMessage(hostPortURL)
 }
 
-// func DealReceivedMessage(msg string) {
-// 	if strings.Contains(msg, "Start Sending Message") {
-// 		beginMsg := strings.Split(msg, "|")[1]
-// 		go ParseBegin(beginMsg)
-// 	} else if strings.Contains(msg, "Stop Sending Message") {
-// 		stopMsg := strings.Split(msg, "|")[1]
-// 		go ParseStop(stopMsg)
-// 	} else if strings.Contains(msg, "Give Up Sending Message") {
-// 		giveupMsg := strings.Split(msg, "|")[1]
-// 		go ParseGiveUp(giveupMsg)
-// 		//todo delete datas
-// 	} else if strings.Contains(msg, "End Sending Message") {
-// 		endsendMsg := strings.Split(msg, "|")[1]
-// 		go ParseEnd(endsendMsg)
-// 	} else {
-// 		go ParseReal(msg)
-// 	}
-// }
+func DealReceivedMessage(msg *url.URL) {
+	// if strings.Contains(msg, "Request Profiler Message") {
+	// 	beginMsg := strings.Split(msg, "|")[1]
+	// 	go StoragePaseMes(beginMsg)
+	// } else if strings.Contains(msg, "Profiler Success Message") {
+	// 	suce := strings.Split(msg, "|")[1]
+	// 	go StorageSucessParseMes(suce)
+	// } else if strings.Contains(msg, "Give Up Connect Message") {
+
+	// } else {
+	// }
+}

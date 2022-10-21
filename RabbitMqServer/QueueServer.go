@@ -1,8 +1,8 @@
-package RbQServer
+package RabbitMqServer
 
 import (
 	"UAutoServer/Logs"
-	"UAutoServer/queue"
+	"UAutoServer/RabbitMqServer/queue"
 	"context"
 )
 
