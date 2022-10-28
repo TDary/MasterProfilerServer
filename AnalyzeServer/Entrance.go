@@ -31,14 +31,12 @@ func AddAnalyzeClient() {
 func InitClient() {
 	var data, _ = ioutil.ReadFile("./ServerConfig.json")
 	var config ConfigData
-	var cData AllProfilerClient
+	// var cData AllProfilerClient
 	var err = json.Unmarshal(data, &config)
 	if err != nil {
 		Logs.Error(err)
 	}
 	res := config["client"]
-	for _, test := range res {
 
-	}
 	fmt.Print(res)
 }

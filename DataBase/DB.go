@@ -3,6 +3,8 @@ package Database
 import (
 	"context"
 
+	"UAutoServer/Logs"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -40,21 +42,21 @@ func TestConn() {
 	//连接到Mongodb
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		loger.Fatal(err)
+		Logs.Error(err)
 	}
 
 	col := client.Database("MyDB").Collection("test")
 	err = col.FindOne(context.TODO(), bson.D{{}}).Decode(&result)
 	if err != nil {
-		loger.Fatal(err)
+		Logs.Error(err)
 	}
-	loger.Print(result)
+	Logs.Print(result)
 
 	//检查连接
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
-		loger.Fatal(err)
+		Logs.Error(err)
 	}
-	loger.Println("Connectd to MongoDB!")
+	Logs.Print("Connectd to MongoDB!")
 
 }
