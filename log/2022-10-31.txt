@@ -1,0 +1,14 @@
+[logTool]2022/10/31 11:24:01 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 11:24:01 log_help.go:23: queue empty
+[logTool]2022/10/31 11:24:01 log_help.go:23: 取出请求解析数据----
+[logTool]2022/10/31 11:24:01 log_help.go:23: 队列已空，进入阻塞状态...
+[logTool]2022/10/31 11:24:56 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 11:26:01 log_help.go:23: 收到请求解析信号----gameid=test&uuid=tsss1&rawfiles=1.raw,2.raw,3.raw
+[logTool]2022/10/31 11:26:26 log_help.go:23: 收到请求解析信号----gameid=test&uuid=tsss1&rawfiles=1.raw,2.raw,3.raw
+[logTool]2022/10/31 11:30:22 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 11:30:38 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 11:37:33 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 11:39:54 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 12:21:08 log_help.go:23: Welcome to use UAutoServer
+[logTool]2022/10/31 12:21:38 log_help.go:28: server selection error: server selection timeout, current topology: { Type: Unknown, Servers: [{ Addr: localhost:27017, Type: Unknown, Last error: connection() error occurred during connection handshake: dial tcp [::1]:27017: connectex: No connection could be made because the target machine actively refused it. }, ] }
+[logTool]2022/10/31 12:21:57 log_help.go:23: Welcome to use UAutoServer

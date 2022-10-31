@@ -1,6 +1,8 @@
 package AnalyzeServer
 
 import (
+	"UAutoServer/DataBase"
+	"UAutoServer/HttpServer"
 	"UAutoServer/Logs"
 	"encoding/json"
 	"io/ioutil"
@@ -13,19 +15,21 @@ type AllProfilerClient struct {
 	State         bool
 }
 
-type MainTable struct {
-	AppKey   string
-	UUID     string
-	RawFiles []string
-}
+// type MainTable struct {
+// 	AppKey   string
+// 	UUID     string
+// 	RawFiles []string
+// }
 
 type ConfigData struct {
 	Client []AllProfilerClient
 }
 
 func Run() {
+	DataBase.InitDB()
 	InitClient()
-	//HttpServer.ListenAndServer("10.11.144.31:8201")
+	go AnalyzeRequestUrl()
+	HttpServer.ListenAndServer("10.11.144.31:8201")
 }
 
 func InitClient() {
@@ -44,8 +48,19 @@ func InitClient() {
 func AnalyzeRequestUrl() {
 	//从消息队列中取出解析的url进行操作
 	//此处作为消费者,同时调用DataBase创建数据库表
+	var getUrlData string
+	var isStop bool
+	isStop = false
 	for true {
-
+		if !isStop {
+			getUrlData = HttpServer.GetStorageParseMes("/HttpServer/ParseQue")
+			if getUrlData != "" {
+				DataBase.ReceiveMes(getUrlData)
+			} else {
+				Logs.Print("队列已空，进入阻塞状态...") //使用通道式消息，知道接收到有解析消息才会解开
+				isStop = true
+			}
+		}
 	}
 }
 

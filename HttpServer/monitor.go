@@ -22,6 +22,7 @@ func ListenAndServer(address string) {
 //Http请求处理模块
 func DealReceivedMessage(msg string) int {
 	if strings.Contains(msg, "RequestProfiler") {
+		//Http://serverip:port/RequestProfiler?gameid=test&uuid=test&rawfiles=1.raw,2.raw,3.raw
 		beginMsg := strings.Split(msg, "?")[1]
 		go StorageParseMes(beginMsg)
 		return 200
@@ -57,7 +58,7 @@ func RequestProfiler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonByte)
 }
 
-//解析成功回调处理
+//解析成功消息回调处理
 func SuccessProfiler(w http.ResponseWriter, r *http.Request) {
 	var resData string
 	RequestUrlData := r.URL.String()

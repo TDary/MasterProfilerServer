@@ -19,7 +19,8 @@ func StorageSucessParseMes(data string) {
 	RabbitMqServer.PutData("/HttpServer/ParseQueSuccessQue", data)
 }
 
-func GetStorageParseMes(data string) {
+func GetStorageParseMes(data string) string {
 	res := RabbitMqServer.GetData(data)
 	Logs.Print("取出请求解析数据----" + res)
+	return res
 }

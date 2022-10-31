@@ -32,8 +32,3 @@ func GetData(tmp string) string {
 
 	return string(result)
 }
-
-//删除数据
-func DeleteData(tmp string) {
-	//TODO:删除数据库中的数据，停止缓存写入队列
-}

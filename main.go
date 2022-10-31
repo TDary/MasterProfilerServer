@@ -2,9 +2,10 @@ package main
 
 import (
 	"UAutoServer/AnalyzeServer"
+	"UAutoServer/Logs"
 )
 
 func main() {
-	// fmt.Print("Welcome to use UAutoServer")
+	Logs.Print("Welcome to use UAutoServer")
 	AnalyzeServer.Run()
 }
