@@ -18,5 +18,5 @@ func InsertMain(data MainTable) {
 	}
 	//默认生成一个唯一全局ID
 	id := iResult.InsertedID.(primitive.ObjectID)
-	Logs.Print(id.Hex())
+	Logs.Print("插入成功" + id.Hex())
 }

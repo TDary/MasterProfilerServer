@@ -15,12 +15,6 @@ type AllProfilerClient struct {
 	State         bool
 }
 
-// type MainTable struct {
-// 	AppKey   string
-// 	UUID     string
-// 	RawFiles []string
-// }
-
 type ConfigData struct {
 	Client []AllProfilerClient
 }
@@ -40,6 +34,7 @@ func InitClient() {
 	if err != nil {
 		Logs.Error(err)
 	}
+	Logs.Print("初始化服务器配置成功----")
 	//测试是否反序列化成功
 	// fmt.Print(config.Client[0].Ip)
 }
