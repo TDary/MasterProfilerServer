@@ -4,12 +4,14 @@
         {
             "Ip": "10.11.145.15",
             "WorkerNumbers" : 4,
-            "WorkType" : "Analyze"
+            "WorkType" : "Analyze",
+            "State" : false
         },
         {
             "Ip": "10.11.145.198",
             "WorkerNumbers" : 4,
-            "WorkType" : "Analyze"
+            "WorkType" : "Analyze",
+            "State": false
         }
     ]
 }
