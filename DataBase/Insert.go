@@ -20,3 +20,15 @@ func InsertMain(data MainTable) {
 	id := iResult.InsertedID.(primitive.ObjectID)
 	Logs.Print("插入成功" + id.Hex())
 }
+
+func Inserts(datas []MainTable) {
+	col := mong.Database("MyDB").Collection("MainTable")
+	indata := []interface{}{datas}
+	_, err := col.InsertMany(context.TODO(), indata)
+	if err != nil {
+		Logs.Print(err)
+		erMainTData = append(erMainTData, datas...)
+	} else {
+		Logs.Print("批量插入数据成功")
+	}
+}
