@@ -1,7 +1,6 @@
-[logTool]2022/11/01 06:57:34 log_help.go:23: Welcome to use UAutoServer
-[logTool]2022/11/01 06:57:34 log_help.go:23: 数据库初始化完毕----
-[logTool]2022/11/01 06:57:34 log_help.go:23: 初始化服务器配置成功----
-[logTool]2022/11/01 06:57:34 log_help.go:23: queue empty
-[logTool]2022/11/01 06:57:35 log_help.go:23: 取出请求解析数据----
-[logTool]2022/11/01 06:57:35 log_help.go:23: 队列已空，进入阻塞状态...
-[logTool]2022/11/01 06:58:56 log_help.go:23: 该客户端解析打开成功----
+[logTool]19:53:26 main.go:9: Welcome to use UAutoServerMaster
+[logTool]19:53:26 DBAO.go:57: 数据库初始化完毕----
+[logTool]19:53:26 Entrance.go:38: 初始化服务器配置成功----
+[logTool]19:53:26 QueueServer.go:29: queue empty
+[logTool]19:53:26 GetMes.go:10: 取出请求解析数据----
+[logTool]19:53:26 Entrance.go:55: 队列已空，进入阻塞状态...

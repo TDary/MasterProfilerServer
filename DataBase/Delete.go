@@ -11,7 +11,7 @@ func Del() {
 	col := mong.Database("MyDB").Collection("MainTable")
 	many, err := col.DeleteMany(context.TODO(), bson.D{{"AppKey", "test"}})
 	if err != nil {
-		Logs.Print(err)
+		Logs.Loggers().Print(err)
 	}
-	Logs.Print(many.DeletedCount)
+	Logs.Loggers().Print(many.DeletedCount)
 }

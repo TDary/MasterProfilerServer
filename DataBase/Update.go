@@ -14,8 +14,8 @@ func UpdateData() {
 	//更改元数据
 	many, err := col.UpdateMany(context.TODO(), bson.D{{"AppKey", "sasas"}}, up)
 	if err != nil {
-		Logs.Print(err)
+		Logs.Loggers().Print(err)
 	}
 	//打印改变了多少
-	Logs.Print(many.ModifiedCount)
+	Logs.Loggers().Print(many.ModifiedCount)
 }

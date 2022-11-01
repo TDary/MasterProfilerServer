@@ -10,7 +10,7 @@ import (
 func PutData(tmp string, msg string) {
 	q, err := queue.NewFifoDiskQueue("./" + tmp)
 	if err != nil {
-		Logs.Error(err)
+		Logs.Loggers().Fatal(err)
 	}
 	defer q.Close()
 	_ = q.Put(context.Background(), []byte(msg))
@@ -20,13 +20,13 @@ func PutData(tmp string, msg string) {
 func GetData(tmp string) string {
 	q, err := queue.NewFifoDiskQueue("./" + tmp)
 	if err != nil {
-		Logs.Error(err)
+		Logs.Loggers().Fatal(err)
 	}
 	defer q.Close()
 
 	result, err := q.Get(context.TODO())
 	if err != nil && err == queue.ErrQueueEmpty {
-		Logs.Print(err)
+		Logs.Loggers().Print(err)
 		return ""
 	}
 

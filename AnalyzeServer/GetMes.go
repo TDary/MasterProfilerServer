@@ -7,6 +7,6 @@ import (
 
 func GetStorageParseMes(data string) string {
 	res := RabbitMqServer.GetData(data)
-	Logs.Print("取出请求解析数据----" + res)
+	Logs.Loggers().Print("取出请求解析数据----" + res)
 	return res
 }

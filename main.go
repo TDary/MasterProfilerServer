@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	Logs.Print("Welcome to use UAutoServerMaster")
+	Logs.Loggers().Print("Welcome to use UAutoServerMaster")
 	StartSystem.Run()
 }

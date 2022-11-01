@@ -13,6 +13,8 @@ func Run() {
 	AnalyzeServer.InitClient()
 	//启动解析url系统
 	go AnalyzeServer.AnalyzeRequestUrl()
+	//启动开始解析消息系统
+	go AnalyzeServer.ParseEntrance()
 	//启动Http监听
 	HttpServer.ListenAndServer("10.11.144.31:8201")
 }
