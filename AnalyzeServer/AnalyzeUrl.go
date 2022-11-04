@@ -3,7 +3,6 @@ package AnalyzeServer
 import (
 	"UAutoServer/DataBase"
 	"UAutoServer/Logs"
-	"UAutoServer/Tools"
 	"strconv"
 	"strings"
 )
@@ -32,6 +31,7 @@ func AnalyzeSuccessUrl() {
 
 }
 
+//添加客户端解析器进入组网
 func AddAnalyzeClient(data string) {
 	//当客户端解析器启动时会ping一次服务器，测试是否已将客户端解析器加入了组网,保证机器间正常运行
 	//只有当ping通的情况下才会将开关打开
@@ -39,7 +39,7 @@ func AddAnalyzeClient(data string) {
 	//同时在此处进行启动客户端解析
 	nowstr := strings.Split(data, "&")
 	nowip := strings.Split(nowstr[0], "=")
-	if Tools.GetKey(nowip[1], allclientIP) {
+	if CheckKey(nowip[1]) {
 		for i := 0; i < len(config.Client); i++ {
 			if config.Client[i].Ip == nowip[1] {
 				config.Client[i].State = true
@@ -61,5 +61,20 @@ func AddAnalyzeClient(data string) {
 		newClient.State = true
 		config.Client = append(config.Client, newClient)
 		Logs.Loggers().Print("识别到新解析客户端，加入组网成功----")
+	}
+}
+
+//开启客户端机器（对已加入组网的机器，进程已被释放完,重新设置并启用）
+func OpenClients(maip string, workNums int) {
+	allclients[maip].WorkerNumbers = workNums
+}
+
+//查询正在运行的工作机数量
+func CheckKey(key string) bool {
+	_, ok := allclients[key]
+	if ok {
+		return true
+	} else {
+		return false
 	}
 }

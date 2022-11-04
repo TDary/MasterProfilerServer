@@ -19,3 +19,13 @@ func UpdateData() {
 	//打印改变了多少
 	Logs.Loggers().Print(many.ModifiedCount)
 }
+
+func ModifySubOne(objid int, state int) {
+	col := mong.Database("MyDB").Collection("SubTable")
+	update := bson.D{{"$set", bson.D{{"state", state}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{"_id", objid}}, update)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	Logs.Loggers().Print(res.UpsertedCount)
+}

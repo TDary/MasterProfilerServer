@@ -7,8 +7,8 @@ import (
 )
 
 var config ConfigData
-var allclientIP map[int]string
 var isStop bool
+var allclients map[string]*ProfilerClient
 
 type ProfilerClient struct {
 	Ip            string
@@ -27,9 +27,9 @@ func InitClient() {
 	if err != nil {
 		Logs.Loggers().Fatal(err)
 	}
-	allclientIP = make(map[int]string, 20) //暂定赋予20个解析客户端
+	allclients = make(map[string]*ProfilerClient, 20) //暂定赋予20个解析客户端
 	for i := 0; i < len(config.Client); i++ {
-		allclientIP[i] = config.Client[i].Ip
+		allclients[config.Client[i].Ip] = &config.Client[i]
 	}
 	Logs.Loggers().Print("初始化服务器配置成功----")
 	//测试是否反序列化成功
