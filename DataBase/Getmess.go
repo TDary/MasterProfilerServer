@@ -43,6 +43,9 @@ func ReceiveMes(mes string) {
 		} else if strings.Contains(str1[i], "endTime") { //解析TestEndTime
 			na := strings.Split(str1[i], "=")
 			mtable.TestEndTime = na[1]
+		} else if strings.Contains(str1[i], "priority") { //解析优先级priority
+			na := strings.Split(str1[i], "=")
+			mtable.Priority = na[1]
 		} else {
 			Logs.Loggers().Print("不存在对额外参数的解析:" + str1[i])
 			Logs.Loggers().Print("无法识别的完整参数：" + mes)
@@ -65,6 +68,7 @@ func GetSubData(mtable MainTable) {
 		stable.AppKey = mtable.AppKey
 		stable.UUID = mtable.UUID
 		stable.State = mtable.State
+		stable.Priority = mtable.Priority
 		stable.StorageIp = mtable.StorageIp
 		stable.UnityVersion = mtable.UnityVersion
 		stable.AnalyzeBucket = mtable.AnalyzeBucket

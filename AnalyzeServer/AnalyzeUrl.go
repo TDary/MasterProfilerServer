@@ -28,6 +28,7 @@ func AnalyzeRequestUrl() {
 
 //对解析成功的消息进行检查判断是否可以进行合并操作
 func AnalyzeSuccessUrl() {
+	//也是进行轮询查找,一次查找较多的数据
 
 }
 

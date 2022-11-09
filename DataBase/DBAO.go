@@ -26,6 +26,7 @@ type MainTable struct {
 	TestBeginTime string
 	TestEndTime   string
 	State         int
+	Priority      string
 	ScreenState   int
 	ScreenFiles   []string
 }
@@ -38,6 +39,7 @@ type SubTable struct {
 	AnalyzeBucket string
 	StorageIp     string
 	State         int
+	Priority      string
 }
 
 func InitDB() {

@@ -19,8 +19,22 @@ func FindSubTableData(uuid string) []SubTable {
 	return resSubT
 }
 
+//查找正常解析案例
 func FindSTbyState(state int) []SubTable {
 	filter := bson.D{{"state", state}}
+	col := mong.Database("MyDB").Collection("SubTable")
+	res, err := col.Find(context.TODO(), filter)
+	if err != nil {
+		Logs.Loggers().Println("查询失败State：", state)
+	}
+	var resSubT []SubTable
+	err = res.All(context.TODO(), &resSubT)
+	return resSubT
+}
+
+//查找有高优先级的案例
+func FindSTHigh(state int) []SubTable {
+	filter := bson.D{{"state", state}, {"priority", "high"}}
 	col := mong.Database("MyDB").Collection("SubTable")
 	res, err := col.Find(context.TODO(), filter)
 	if err != nil {
