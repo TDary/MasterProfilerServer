@@ -20,10 +20,33 @@ func UpdateData() {
 	Logs.Loggers().Print(many.ModifiedCount)
 }
 
+//更新子表任务状态
+func ModifySub(uuid string, rawfile string, state int) {
+	col := mong.Database("MyDB").Collection("SubTable")
+	update := bson.D{{"$set", bson.D{{"state", state}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfile}}, update)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	Logs.Loggers().Print(res.UpsertedCount)
+}
+
+//更新子表任务状态
 func ModifySubOne(objid int, state int) {
 	col := mong.Database("MyDB").Collection("SubTable")
 	update := bson.D{{"$set", bson.D{{"state", state}}}}
 	res, err := col.UpdateOne(context.TODO(), bson.D{{"_id", objid}}, update)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	Logs.Loggers().Print(res.UpsertedCount)
+}
+
+//更新子表成功状态
+func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
+	col := mong.Database("MyDB").Collection("SubTable")
+	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeiP", anaip}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfilename}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}

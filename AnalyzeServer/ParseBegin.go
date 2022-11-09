@@ -71,17 +71,26 @@ func Parse(freec int, st []DataBase.SubTable) {
 	if freec < len(st) { //可用进程数量小于子表解析数量
 		for i := 0; i < freec; i++ {
 			ip := GetFreeRunC()
+			//发送开始解析请求
 			SendBeginMessage(st[i], ip)
+			//同时将当前任务状态改写为2
+			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
 		}
 	} else if freec > len(st) {
 		for i := 0; i < len(st); i++ {
 			ip := GetFreeRunC()
+			//发送开始解析请求
 			SendBeginMessage(st[i], ip)
+			//同时将当前任务状态改写为2
+			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
 		}
 	} else {
 		for i := 0; i < freec; i++ {
 			ip := GetFreeRunC()
+			//发送开始解析请求
 			SendBeginMessage(st[i], ip)
+			//同时将当前任务状态改写为2
+			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
 		}
 	}
 }
@@ -94,6 +103,15 @@ func ReduceRunC(ip string, rcount int) {
 			Logs.Loggers().Print("IP:" + ip + "的可用机器已用完，正在等待释放，该机器强行设置进入关闭状态。")
 		} else {
 			allclients[ip].WorkerNumbers = allclients[ip].WorkerNumbers - rcount
+		}
+	}
+}
+
+//每完成一次解析并成功接受就释放进程
+func AddRunC(ip []string, acount int) {
+	for i := 0; i < len(ip); i++ {
+		if CheckKey(ip[i]) {
+			allclients[ip[i]].WorkerNumbers = allclients[ip[i]].WorkerNumbers + acount
 		}
 	}
 }

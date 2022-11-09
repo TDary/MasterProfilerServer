@@ -7,18 +7,31 @@ import (
 )
 
 var config ConfigData
-var isStop bool
-var allclients map[string]*ProfilerClient
+var isStop bool                           //请求解析处理控制信号
+var isAnalyzeStop bool                    //完成解析处理控制信号
+var allclients map[string]*ProfilerClient //解析客户端及服务端配置
+
+type SuccessData struct {
+	UUID    string
+	IP      string
+	RawFile string
+}
 
 type ProfilerClient struct {
 	Ip            string
+	Port          string
 	WorkerNumbers int
 	WorkType      string
 	State         bool
 }
 
+type MergeServerConfig struct {
+	Ip   string
+	Port string
+}
 type ConfigData struct {
-	Client []ProfilerClient
+	Client      []ProfilerClient
+	MergeServer MergeServerConfig
 }
 
 func InitClient() {
@@ -33,12 +46,20 @@ func InitClient() {
 	}
 	Logs.Loggers().Print("初始化服务器配置成功----")
 	//测试是否反序列化成功
-	// fmt.Print(config.Client[0].Ip)
+	// fmt.Print(config)
 }
 
 func ChangeMessage() {
 	if isStop {
 		isStop = false
+	} else {
+		return
+	}
+}
+
+func ChangeSuccessMessage() {
+	if isStop {
+		isAnalyzeStop = false
 	} else {
 		return
 	}

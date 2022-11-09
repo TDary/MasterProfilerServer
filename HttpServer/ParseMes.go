@@ -15,4 +15,5 @@ func StorageParseMes(data string) {
 func StorageSucessParseMes(data string) {
 	Logs.Loggers().Print("收到解析成功信号----" + data)
 	RabbitMqServer.PutData("/HttpServer/ParseQueSuccessQue", data)
+	AnalyzeServer.ChangeSuccessMessage()
 }

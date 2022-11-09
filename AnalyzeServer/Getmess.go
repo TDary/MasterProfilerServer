@@ -1,12 +1,13 @@
-package DataBase
+package AnalyzeServer
 
 import (
+	"UAutoServer/DataBase"
 	"UAutoServer/Logs"
 	"strings"
 )
 
 func ReceiveMes(mes string) {
-	var mtable MainTable
+	var mtable DataBase.MainTable
 	str1 := strings.Split(mes, "&")
 	for i := 0; i < len(str1); i++ {
 		if strings.Contains(str1[i], "gameid") { //解析gameid
@@ -55,16 +56,16 @@ func ReceiveMes(mes string) {
 	mtable.State = 0
 	mtable.ScreenFiles = nil
 	mtable.ScreenState = 0
-	InsertMain(mtable)
+	DataBase.InsertMain(mtable)
 	GetSubData(mtable)
 }
 
-func GetSubData(mtable MainTable) {
+func GetSubData(mtable DataBase.MainTable) {
 	if len(mtable.RawFiles) == 0 {
 		return
 	}
 	for i := 0; i < len(mtable.RawFiles); i++ {
-		var stable SubTable
+		var stable DataBase.SubTable
 		stable.AppKey = mtable.AppKey
 		stable.UUID = mtable.UUID
 		stable.State = mtable.State
@@ -72,7 +73,8 @@ func GetSubData(mtable MainTable) {
 		stable.StorageIp = mtable.StorageIp
 		stable.UnityVersion = mtable.UnityVersion
 		stable.AnalyzeBucket = mtable.AnalyzeBucket
+		stable.AnalyzeIP = ""
 		stable.RawFile = mtable.RawFiles[i]
-		InsertSub(stable)
+		DataBase.InsertSub(stable)
 	}
 }

@@ -7,12 +7,26 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func FindMainTable(state int) []MainTable {
+	filter := bson.D{{"state", state}}
+	col := mong.Database("MyDB").Collection("MainTable")
+	res, err := col.Find(context.TODO(), filter)
+	if err != nil {
+		Logs.Loggers().Println("查询失败：", err)
+		return nil
+	}
+	var MainT []MainTable
+	err = res.All(context.TODO(), &MainT)
+	return MainT
+}
+
 func FindSubTableData(uuid string) []SubTable {
 	filter := bson.D{{"uuid", uuid}}
 	col := mong.Database("MyDB").Collection("SubTable")
 	res, err := col.Find(context.TODO(), filter)
 	if err != nil {
-		Logs.Loggers().Print("查询失败UUID：" + uuid)
+		Logs.Loggers().Println("查询失败:", err)
+		return nil
 	}
 	var resSubT []SubTable
 	err = res.All(context.TODO(), &resSubT)
@@ -25,7 +39,8 @@ func FindSTbyState(state int) []SubTable {
 	col := mong.Database("MyDB").Collection("SubTable")
 	res, err := col.Find(context.TODO(), filter)
 	if err != nil {
-		Logs.Loggers().Println("查询失败State：", state)
+		Logs.Loggers().Println("查询失败:", err)
+		return nil
 	}
 	var resSubT []SubTable
 	err = res.All(context.TODO(), &resSubT)
@@ -38,7 +53,7 @@ func FindSTHigh(state int) []SubTable {
 	col := mong.Database("MyDB").Collection("SubTable")
 	res, err := col.Find(context.TODO(), filter)
 	if err != nil {
-		Logs.Loggers().Println("查询失败State：", state)
+		Logs.Loggers().Println("查询失败:", err)
 	}
 	var resSubT []SubTable
 	err = res.All(context.TODO(), &resSubT)

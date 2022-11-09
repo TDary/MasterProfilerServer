@@ -37,6 +37,7 @@ type SubTable struct {
 	RawFile       string
 	UnityVersion  string
 	AnalyzeBucket string
+	AnalyzeIP     string
 	StorageIp     string
 	State         int
 	Priority      string
