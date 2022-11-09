@@ -2,11 +2,11 @@
 package main
 
 import (
-	"UAutoServer/Logs"
-	"UAutoServer/StartSystem"
+	"MasterServer/Logs"
+	"MasterServer/StartSystem"
 )
 
 func main() {
-	Logs.Loggers().Print("Welcome to use UAutoServerMaster")
+	Logs.Loggers().Print("Welcome to use ServerMaster")
 	StartSystem.Run()
 }

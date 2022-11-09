@@ -1,8 +1,8 @@
 package AnalyzeServer
 
 import (
-	"UAutoServer/Logs"
-	"UAutoServer/RabbitMqServer"
+	"MasterServer/Logs"
+	"MasterServer/RabbitMqServer"
 )
 
 func GetStorageParseMes(data string) string {

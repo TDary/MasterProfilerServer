@@ -1,9 +1,9 @@
 package HttpServer
 
 import (
-	"UAutoServer/AnalyzeServer"
-	"UAutoServer/Logs"
-	"UAutoServer/RabbitMqServer"
+	"MasterServer/AnalyzeServer"
+	"MasterServer/Logs"
+	"MasterServer/RabbitMqServer"
 )
 
 func StorageParseMes(data string) {

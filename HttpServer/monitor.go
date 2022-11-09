@@ -1,7 +1,7 @@
 package HttpServer
 
 import (
-	"UAutoServer/AnalyzeServer"
+	"MasterServer/AnalyzeServer"
 	"encoding/json"
 	"net/http"
 	"strings"

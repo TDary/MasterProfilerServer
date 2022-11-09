@@ -1,8 +1,8 @@
 package RabbitMqServer
 
 import (
-	"UAutoServer/Logs"
-	"UAutoServer/RabbitMqServer/queue"
+	"MasterServer/Logs"
+	"MasterServer/RabbitMqServer/queue"
 	"context"
 )
 

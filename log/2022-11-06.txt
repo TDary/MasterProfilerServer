@@ -1,0 +1,2 @@
+[logTool]22:09:43 main.go:9: Welcome to use UAutoServerMaster
+[logTool]22:10:13 DBAO.go:55: server selection error: server selection timeout, current topology: { Type: Unknown, Servers: [{ Addr: 10.11.145.15:27171, Type: Unknown, Last error: connection() error occurred during connection handshake: dial tcp 10.11.145.15:27171: i/o timeout }, ] }

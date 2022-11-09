@@ -1,7 +1,7 @@
 package AnalyzeServer
 
 import (
-	"UAutoServer/Logs"
+	"MasterServer/Logs"
 	"encoding/json"
 	"io/ioutil"
 )

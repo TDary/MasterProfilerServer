@@ -1,7 +1,7 @@
 package DataBase
 
 import (
-	"UAutoServer/Logs"
+	"MasterServer/Logs"
 	"context"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"

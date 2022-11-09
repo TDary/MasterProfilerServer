@@ -1,9 +1,9 @@
 package StartSystem
 
 import (
-	"UAutoServer/AnalyzeServer"
-	"UAutoServer/DataBase"
-	"UAutoServer/HttpServer"
+	"MasterServer/AnalyzeServer"
+	"MasterServer/DataBase"
+	"MasterServer/HttpServer"
 )
 
 func Run() {

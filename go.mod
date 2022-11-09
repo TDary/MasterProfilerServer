@@ -1,4 +1,4 @@
-module UAutoServer
+module MasterServer
 
 go 1.18
 

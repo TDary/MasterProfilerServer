@@ -1,8 +1,8 @@
 package AnalyzeServer
 
 import (
-	"UAutoServer/DataBase"
-	"UAutoServer/Logs"
+	"MasterServer/DataBase"
+	"MasterServer/Logs"
 	"strings"
 )
 
