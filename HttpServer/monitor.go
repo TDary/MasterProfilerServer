@@ -7,11 +7,6 @@ import (
 	"strings"
 )
 
-type Res struct {
-	Code int
-	Data string
-}
-
 func ListenAndServer(address string) {
 	http.HandleFunc("/RequestProfiler", RequestProfiler)
 	http.HandleFunc("/SuccessProfiler", SuccessProfiler)
