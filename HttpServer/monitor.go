@@ -62,16 +62,12 @@ func SuccessProfiler(w http.ResponseWriter, r *http.Request) {
 	RequestUrlData := r.URL.String()
 	resMes := DealReceivedMessage(RequestUrlData)
 	if resMes == 200 {
-		resData = "success"
+		resData = "ok"
 	} else {
-		resData = "Request Fail"
+		resData = "Fail"
 	}
 	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	res := Res{
-		Code: resMes,
-		Data: resData,
-	}
-	jsonByte, _ := json.Marshal(res) //转json
+	jsonByte, _ := json.Marshal(resData)               //转json
 	w.Write(jsonByte)
 }
 
