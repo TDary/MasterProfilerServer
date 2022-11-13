@@ -30,6 +30,7 @@ type SubTable struct {
 	AppKey        string
 	UUID          string
 	RawFile       string
+	CsvPath       string
 	UnityVersion  string
 	AnalyzeBucket string
 	AnalyzeIP     string

@@ -74,6 +74,7 @@ func GetSubData(mtable DataBase.MainTable) {
 		stable.UnityVersion = mtable.UnityVersion
 		stable.AnalyzeBucket = mtable.AnalyzeBucket
 		stable.AnalyzeIP = ""
+		stable.CsvPath = ""
 		stable.RawFile = mtable.RawFiles[i]
 		DataBase.InsertSub(stable)
 	}
