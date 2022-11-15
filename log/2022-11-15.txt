@@ -1,0 +1,6 @@
+[logTool]11:29:45 main.go:10: Welcome to use ServerMaster
+[logTool]11:29:45 Init.go:25: 数据库初始化完毕----
+[logTool]11:29:45 Init.go:19: 初始化服务器配置成功----
+[logTool]11:30:47 main.go:10: Welcome to use ServerMaster
+[logTool]11:30:47 Init.go:25: 数据库初始化完毕----
+[logTool]11:30:47 Init.go:19: 初始化服务器配置成功----

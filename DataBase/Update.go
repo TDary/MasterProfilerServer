@@ -52,3 +52,14 @@ func UpdateStates(rawfilename string, uuid string, state int, anaip string, csvp
 	}
 	Logs.Loggers().Print(res.UpsertedCount)
 }
+
+//将失败的任务进行重新解析
+func FindAndModify(uuid string, rawfile string) {
+	col := mong.Database("MyDB").Collection("SubTable")
+	update := bson.D{{"$set", bson.D{{"state", 0}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfile}}, update)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	Logs.Loggers().Print(res.UpsertedCount)
+}

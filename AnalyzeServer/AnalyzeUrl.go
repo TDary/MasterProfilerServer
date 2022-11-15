@@ -210,3 +210,20 @@ func CheckKey(key string) bool {
 		return false
 	}
 }
+
+//重新解析
+func ReProfilerAna(data string) {
+	spldata := strings.Split(data, "&")
+	var uuid string
+	var rawfile string
+	for i := 0; i < len(spldata); i++ {
+		if strings.Contains(spldata[i], "uuid") {
+			uid := strings.Split(spldata[i], "=")
+			uuid = uid[1]
+		} else if strings.Contains(spldata[i], "rawfile") {
+			file := strings.Split(spldata[i], "=")
+			rawfile = file[1]
+		}
+	}
+	DataBase.FindAndModify(uuid, rawfile)
+}

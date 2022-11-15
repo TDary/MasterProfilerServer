@@ -20,11 +20,12 @@ type ProfilerClient struct {
 	State         bool
 }
 
-type MergeServerConfig struct {
+type ServerConfig struct {
 	Ip   string
 	Port string
 }
 type ConfigData struct {
-	Client      []ProfilerClient
-	MergeServer MergeServerConfig
+	Client       []ProfilerClient
+	MergeServer  ServerConfig
+	MasterServer ServerConfig
 }

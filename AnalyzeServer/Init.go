@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-func InitClient() {
+func InitClient() string {
 	var data, _ = ioutil.ReadFile("./ServerConfig.json")
 	var err = json.Unmarshal(data, &config)
 	if err != nil {
@@ -19,4 +19,6 @@ func InitClient() {
 	Logs.Loggers().Print("初始化服务器配置成功----")
 	//测试是否反序列化成功
 	// fmt.Print(config)
+	serUrl := config.MasterServer.Ip + ":" + config.MasterServer.Port
+	return serUrl
 }

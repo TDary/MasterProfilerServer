@@ -11,6 +11,7 @@ func ListenAndServer(address string) {
 	http.HandleFunc("/RequestProfiler", RequestProfiler)
 	http.HandleFunc("/SuccessProfiler", SuccessProfiler)
 	http.HandleFunc("/RquestClient", RequestClient)
+	http.HandleFunc("/ReAnalyze", ReProfiler) //重新解析  待评估
 	http.HandleFunc("/redirect", Redirect)
 	//Http监听函数
 	http.ListenAndServe(address, nil)
@@ -30,6 +31,10 @@ func DealReceivedMessage(msg string) int {
 	} else if strings.Contains(msg, "RquestClient") {
 		req := strings.Split(msg, "?")[1]
 		go AnalyzeServer.AddAnalyzeClient(req)
+		return 200
+	} else if strings.Contains(msg, "ReAnalyze") {
+		req := strings.Split(msg, "?")[1]
+		go AnalyzeServer.ReProfilerAna(req)
 		return 200
 	} else {
 		return 400
@@ -87,6 +92,21 @@ func RequestClient(w http.ResponseWriter, r *http.Request) {
 		Data: resData,
 	}
 	jsonByte, _ := json.Marshal(res) //转json
+	w.Write(jsonByte)
+}
+
+//重新解析失败的源文件
+func ReProfiler(w http.ResponseWriter, r *http.Request) {
+	var resData string
+	RequestUrlData := r.URL.String()
+	resMes := DealReceivedMessage(RequestUrlData)
+	if resMes == 200 {
+		resData = "ok"
+	} else {
+		resData = "Fail"
+	}
+	w.Header().Set("Content-Type", "application/json") //设置响应内容
+	jsonByte, _ := json.Marshal(resData)               //转json
 	w.Write(jsonByte)
 }
 
