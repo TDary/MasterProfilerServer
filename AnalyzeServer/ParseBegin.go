@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -42,7 +43,7 @@ func SendBeginMessage(st DataBase.SubTable, m_ip string) {
 			Logs.Loggers().Print(err)
 		}
 	}
-	if result.String() == "ok" {
+	if strings.Contains(result.String(), "ok") {
 		//客户端成功接收到开始解析的消息，降空闲进程数减1
 		Logs.Loggers().Print("解析客户端成功接收到消息，准备开始解析----")
 		ReduceRunC(m_ip, 1)
@@ -57,8 +58,8 @@ func CheckSubTable() {
 	var freeProcess int
 	freeProcess = GetTotalRunC()
 	currentState := 0
-	highdata := DataBase.FindSTbyState(currentState) //高优先级的先解析
-	andata := DataBase.FindSTbyState(currentState)   //普通案例
+	highdata := DataBase.FindSTHigh(currentState)  //高优先级的先解析
+	andata := DataBase.FindSTbyState(currentState) //普通案例
 	if len(highdata) != 0 {
 		Parse(freeProcess, highdata)
 	} else {

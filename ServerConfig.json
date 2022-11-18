@@ -9,7 +9,7 @@
             "State" : false
         },
         {
-            "Ip": "10.11.145.198",
+            "Ip": "10.11.144.31",
             "port":"7950",
             "WorkerNumbers" : 4,
             "WorkType" : "Analyze",

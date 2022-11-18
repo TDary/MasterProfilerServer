@@ -87,11 +87,7 @@ func RequestClient(w http.ResponseWriter, r *http.Request) {
 		resData = "Request Fail"
 	}
 	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	res := Res{
-		Code: resMes,
-		Data: resData,
-	}
-	jsonByte, _ := json.Marshal(res) //转json
+	jsonByte, _ := json.Marshal(resData)               //转json
 	w.Write(jsonByte)
 }
 

@@ -1,0 +1,27 @@
+[logTool]10:50:55 main.go:10: Welcome to use ServerMaster
+[logTool]10:50:55 Init.go:25: 数据库初始化完毕----
+[logTool]10:50:55 Init.go:19: 初始化服务器配置成功----
+[logTool]10:58:19 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.145.15
+[logTool]11:00:37 main.go:10: Welcome to use ServerMaster
+[logTool]11:00:37 Init.go:25: 数据库初始化完毕----
+[logTool]11:00:37 Init.go:19: 初始化服务器配置成功----
+[logTool]11:01:03 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]11:02:49 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]11:07:13 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]11:12:03 ParseMes.go:10: 收到请求解析信号----gameid=mecha&uuid=test11&rawFiles=1668614400.raw&gameName=%E6%9C%BA%E7%94%B2&caseName=%E6%B5%8B%E8%AF%95&unityVersion=2021.3.1f1&bucket=mecha-test11&storageIp=10.11.144.31&device=i911&beginTime=now&endTime=now&priority=high
+[logTool]11:12:03 GetMes.go:10: 取出请求解析数据----gameid=mecha&uuid=test11&rawFiles=1668614400.raw&gameName=%E6%9C%BA%E7%94%B2&caseName=%E6%B5%8B%E8%AF%95&unityVersion=2021.3.1f1&bucket=mecha-test11&storageIp=10.11.144.31&device=i911&beginTime=now&endTime=now&priority=high
+[logTool]11:12:03 Insert.go:21: 插入成功6376f803cfe4ac1363045a2f
+[logTool]11:12:03 Insert.go:32: 插入成功6376f803cfe4ac1363045a30
+[logTool]11:12:03 QueueServer.go:29: queue empty
+[logTool]11:12:03 GetMes.go:10: 取出请求解析数据----
+[logTool]11:12:03 AnalyzeUrl.go:26: 队列已空，进入阻塞状态...
+[logTool]11:15:38 ParseBegin.go:50: 客户端未成功接收到消息----
+[logTool]11:15:38 Update.go:31: 0
+[logTool]11:17:07 main.go:10: Welcome to use ServerMaster
+[logTool]11:17:07 Init.go:25: 数据库初始化完毕----
+[logTool]11:17:07 Init.go:19: 初始化服务器配置成功----
+[logTool]11:20:08 main.go:10: Welcome to use ServerMaster
+[logTool]11:20:08 Init.go:25: 数据库初始化完毕----
+[logTool]11:20:08 Init.go:19: 初始化服务器配置成功----
+[logTool]11:20:08 ParseBegin.go:48: 解析客户端成功接收到消息，准备开始解析----
+[logTool]11:20:08 Update.go:31: 0
