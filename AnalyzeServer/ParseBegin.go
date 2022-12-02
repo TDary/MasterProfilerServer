@@ -13,9 +13,9 @@ import (
 func ParseEntrance() {
 	for true {
 		CheckSubTable()
-		//每隔五分钟检查并发送一次解析
+		//每隔2分钟检查并批量发送一次解析
 		//TODO:如果有请求案例进来则打断等待
-		time.Sleep(5 * time.Minute)
+		time.Sleep(2 * time.Minute)
 	}
 }
 
@@ -130,8 +130,8 @@ func GetTotalRunC() int {
 func GetFreeRunC() string {
 	var freeClient string
 	for _, val := range allclients {
-		if val.WorkerNumbers != 0 {
-			freeClient = val.Ip
+		if val.WorkerNumbers != 0 && val.State {
+			freeClient = val.Ip + ":" + val.Port
 			return freeClient
 		}
 	}

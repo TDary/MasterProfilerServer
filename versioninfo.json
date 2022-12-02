@@ -21,7 +21,7 @@
     "StringFileInfo": {
         "Comments": "解析服务中枢系统",
         "CompanyName": "No Company",
-        "FileDescription": "这是测试专用程序",
+        "FileDescription": "中枢服务系统",
         "FileVersion": "v1.0.0.0",
         "InternalName": "UAutoGetData",
         "LegalCopyright": "Development By Dary",

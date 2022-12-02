@@ -1,0 +1,64 @@
+[logTool]21:36:34 main.go:10: Welcome to use ServerMaster
+[logTool]21:36:34 Init.go:25: 数据库初始化完毕----
+[logTool]21:36:34 Init.go:19: 初始化服务器配置成功----
+[logTool]21:36:47 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]21:41:44 main.go:10: Welcome to use ServerMaster
+[logTool]21:41:44 Init.go:25: 数据库初始化完毕----
+[logTool]21:41:44 Init.go:19: 初始化服务器配置成功----
+[logTool]21:41:49 ParseBegin.go:31: Get "http://10.11.145.15:7950/analyze?uuid=test11&rawfile=1668614400.raw&unityversion=2021.3.1f1&analyzebucket=mecha-test11": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+[logTool]21:41:49 Update.go:31: 0
+[logTool]21:41:58 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]21:45:52 main.go:10: Welcome to use ServerMaster
+[logTool]21:45:52 Init.go:25: 数据库初始化完毕----
+[logTool]21:45:52 Init.go:19: 初始化服务器配置成功----
+[logTool]21:46:00 AnalyzeUrl.go:178: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]21:47:52 ParseBegin.go:48: 解析客户端成功接收到消息，准备开始解析----
+[logTool]21:47:52 Update.go:31: 0
+[logTool]21:47:56 ParseMes.go:16: 收到解析成功信号----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]21:47:56 GetMes.go:16: 取出解析成功数据----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]21:47:56 QueueServer.go:29: queue empty
+[logTool]21:47:56 GetMes.go:16: 取出解析成功数据----
+[logTool]21:47:56 AnalyzeUrl.go:54: 成功解析消息队列已空，进入检查状态
+[logTool]21:47:56 AnalyzeUrl.go:84: 无待合并的案例----
+[logTool]22:00:09 main.go:10: Welcome to use ServerMaster
+[logTool]22:00:09 Init.go:25: 数据库初始化完毕----
+[logTool]22:00:09 Init.go:19: 初始化服务器配置成功----
+[logTool]22:00:22 AnalyzeUrl.go:179: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]22:02:09 ParseBegin.go:48: 解析客户端成功接收到消息，准备开始解析----
+[logTool]22:02:09 Update.go:31: 0
+[logTool]22:02:10 ParseMes.go:16: 收到解析成功信号----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:02:10 GetMes.go:16: 取出解析成功数据----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:02:10 QueueServer.go:29: queue empty
+[logTool]22:02:10 GetMes.go:16: 取出解析成功数据----
+[logTool]22:02:10 AnalyzeUrl.go:54: 成功解析消息队列已空，进入检查状态
+[logTool]22:02:10 AnalyzeUrl.go:138: []
+[logTool]22:02:10 AnalyzeUrl.go:84: 无待合并的案例----
+[logTool]22:08:10 main.go:10: Welcome to use ServerMaster
+[logTool]22:08:10 Init.go:25: 数据库初始化完毕----
+[logTool]22:08:10 Init.go:19: 初始化服务器配置成功----
+[logTool]22:08:35 AnalyzeUrl.go:180: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]22:10:11 ParseBegin.go:48: 解析客户端成功接收到消息，准备开始解析----
+[logTool]22:10:11 Update.go:31: 0
+[logTool]22:10:12 ParseMes.go:16: 收到解析成功信号----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:10:12 GetMes.go:16: 取出解析成功数据----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:10:12 AnalyzeUrl.go:165: [{test11  1668614400.raw E:/TestFiles/test11/1668614400.raw.csv}]
+[logTool]22:10:12 QueueServer.go:29: queue empty
+[logTool]22:10:12 GetMes.go:16: 取出解析成功数据----
+[logTool]22:10:12 AnalyzeUrl.go:54: 成功解析消息队列已空，进入检查状态
+[logTool]22:10:12 AnalyzeUrl.go:138: []
+[logTool]22:10:12 AnalyzeUrl.go:84: 无待合并的案例----
+[logTool]22:12:29 main.go:10: Welcome to use ServerMaster
+[logTool]22:12:29 Init.go:25: 数据库初始化完毕----
+[logTool]22:12:29 Init.go:19: 初始化服务器配置成功----
+[logTool]22:12:42 AnalyzeUrl.go:181: 该客户端解析打开成功----IP:10.11.144.31
+[logTool]22:14:29 ParseBegin.go:48: 解析客户端成功接收到消息，准备开始解析----
+[logTool]22:14:29 Update.go:31: 0
+[logTool]22:14:30 ParseMes.go:16: 收到解析成功信号----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:14:30 GetMes.go:16: 取出解析成功数据----uuid=test11&rawfile=1668614400.raw&csvpath=E:/TestFiles/test11/1668614400.raw.csv
+[logTool]22:14:30 AnalyzeUrl.go:165: [{test11  1668614400.raw E:/TestFiles/test11/1668614400.raw.csv}]
+[logTool]22:14:30 QueueServer.go:29: queue empty
+[logTool]22:14:30 GetMes.go:16: 取出解析成功数据----
+[logTool]22:14:30 AnalyzeUrl.go:54: 成功解析消息队列已空，进入检查状态
+[logTool]22:14:30 AnalyzeUrl.go:138: [{test11  1668614400.raw E:/TestFiles/test11/1668614400.raw.csv}]
+[logTool]22:14:30 Update.go:53: 0
+[logTool]22:14:30 AnalyzeUrl.go:84: 无待合并的案例----

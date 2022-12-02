@@ -34,30 +34,30 @@ func AnalyzeRequestUrl() {
 func AnalyzeSuccessUrl() {
 	//也是进行轮询查找,一次查找较多的数据
 	var getanalyzeData string
-	waitModifyState := make([]SuccessData, 50)
+	var waitModifyState []SuccessData
 	isAnalyzeStop = true //初始状态系统关闭(避免刷日志)
 	for true {
 		if !isAnalyzeStop {
 			if len(waitModifyState) == 50 {
 				//达到了允许存储的上限,直接进行修改状态值并释放进程
 				var allip []string
-				ModifySubState(waitModifyState, allip)    //修改状态值
-				waitModifyState = make([]SuccessData, 50) //重置上限值
-				AddRunC(allip, 1)                         //释放进程
+				ModifySubState(waitModifyState, allip) //修改状态值
+				waitModifyState = nil                  //重置上限值
+				AddRunC(allip, 1)                      //释放进程
 				//开始判断是否有案例可以进行合并入库操作
 				CheckCaseToMerge()
 			}
 			getanalyzeData = GetSuccessMes("/HttpServer/ParseQueSuccessQue")
 			if getanalyzeData != "" {
-				ParseSuccessData(getanalyzeData, waitModifyState)
+				waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
 			} else {
 				Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
 				isAnalyzeStop = true
 				//开始修改子案例状态,同时释放解析进程
 				var allip []string
-				ModifySubState(waitModifyState, allip)    //修改状态值
-				waitModifyState = make([]SuccessData, 50) //重置上限值
-				AddRunC(allip, 1)                         //释放进程
+				ModifySubState(waitModifyState, allip) //修改状态值
+				waitModifyState = nil                  //重置上限值
+				AddRunC(allip, 1)                      //释放进程
 				//开始判断是否有案例可以进行合并入库操作
 				CheckCaseToMerge()
 			}
@@ -142,7 +142,7 @@ func ModifySubState(wdata []SuccessData, allip []string) {
 }
 
 //处理解析成功消息
-func ParseSuccessData(data string, wdata []SuccessData) {
+func ParseSuccessData(data string, wdata []SuccessData) []SuccessData {
 	var addData SuccessData
 	splidata := strings.Split(data, "&")
 	for i := 0; i < len(splidata); i++ {
@@ -161,6 +161,7 @@ func ParseSuccessData(data string, wdata []SuccessData) {
 		}
 	}
 	wdata = append(wdata, addData)
+	return wdata
 }
 
 //添加客户端解析器进入组网
