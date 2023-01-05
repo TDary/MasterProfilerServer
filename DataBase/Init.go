@@ -10,7 +10,7 @@ import (
 
 func InitDB() {
 	var err error
-	clientOption := options.Client().ApplyURI("mongodb://10.11.145.15:27171")
+	clientOption := options.Client().ApplyURI("mongodb://10.11.144.31:27171")
 
 	//连接到MongoDB
 	mong, err = mongo.Connect(context.TODO(), clientOption)

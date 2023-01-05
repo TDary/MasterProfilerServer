@@ -68,7 +68,7 @@ func AnalyzeSuccessUrl() {
 //检查案例状态是否有可以进行合并的
 func CheckCaseToMerge() {
 	var waitCase []DataBase.MainTable
-	waitCase = DataBase.FindMainTable(1)
+	waitCase = DataBase.FindMainTable(0)
 	if waitCase != nil {
 		for i := 0; i < len(waitCase); i++ {
 			currentCase := CheckSub(waitCase[i].UUID)

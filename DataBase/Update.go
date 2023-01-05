@@ -45,7 +45,7 @@ func ModifySubOne(objid int, state int) {
 //更新子表成功状态
 func UpdateStates(rawfilename string, uuid string, state int, anaip string, csvpath string) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeiP", anaip}, {"csvpath", csvpath}}}}
+	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeip", anaip}, {"csvpath", csvpath}}}}
 	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfilename}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
