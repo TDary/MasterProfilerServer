@@ -73,26 +73,39 @@ func Parse(freec int, st []DataBase.SubTable) {
 	if freec < len(st) { //可用进程数量小于子表解析数量
 		for i := 0; i < freec; i++ {
 			ip := GetFreeRunC()
-			//发送开始解析请求
-			SendBeginMessage(st[i], ip)
-			//同时将当前任务状态改写为2
-			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			if ip != "" {
+				//发送开始解析请求
+				SendBeginMessage(st[i], ip)
+				//同时将当前任务状态改写为2
+				DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			} else {
+				return
+			}
 		}
 	} else if freec > len(st) {
 		for i := 0; i < len(st); i++ {
 			ip := GetFreeRunC()
-			//发送开始解析请求
-			SendBeginMessage(st[i], ip)
-			//同时将当前任务状态改写为2
-			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			if ip != "" {
+				//发送开始解析请求
+				SendBeginMessage(st[i], ip)
+				//同时将当前任务状态改写为2
+				DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			} else {
+				return
+			}
 		}
 	} else {
 		for i := 0; i < freec; i++ {
 			ip := GetFreeRunC()
-			//发送开始解析请求
-			SendBeginMessage(st[i], ip)
-			//同时将当前任务状态改写为2
-			DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			if ip != "" {
+
+				//发送开始解析请求
+				SendBeginMessage(st[i], ip)
+				//同时将当前任务状态改写为2
+				DataBase.ModifySub(st[i].UUID, st[i].RawFile, 2)
+			} else {
+				return
+			}
 		}
 	}
 }
