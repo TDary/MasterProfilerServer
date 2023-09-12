@@ -1,19 +1,18 @@
 package HttpServer
 
 import (
-	"MasterServer/AnalyzeServer"
 	"MasterServer/Logs"
 	"MasterServer/RabbitMqServer"
 )
 
-func StorageParseMes(data string) {
-	Logs.Loggers().Print("收到请求解析信号----" + data)
-	RabbitMqServer.PutData("/HttpServer/ParseQue", data)
-	AnalyzeServer.ChangeMessage()
-}
+// func StorageParseMes(data string) {
+// 	Logs.Loggers().Print("收到请求解析信号----" + data)
+// 	RabbitMqServer.PutData("/HttpServer/ParseQue", data)
+// 	AnalyzeServer.ChangeMessage()
+// }
 
 func StorageSucessParseMes(data string) {
 	Logs.Loggers().Print("收到解析成功信号----" + data)
 	RabbitMqServer.PutData("/HttpServer/ParseQueSuccessQue", data)
-	AnalyzeServer.ChangeSuccessMessage()
+	//AnalyzeServer.ChangeSuccessMessage()
 }

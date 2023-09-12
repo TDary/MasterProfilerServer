@@ -7,6 +7,20 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+//更新主表状态值
+func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
+	col := mong.Database("MyDB").Collection("MainTable")
+	//更改数据
+	up := bson.D{{"$set", bson.D{{"AppKey", appkey}, {"UUID", uuid}}}}
+	//更改元数据
+	many, err := col.UpdateMany(context.TODO(), bson.D{{"rawFiles", rawFiles}}, up)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	//打印改变了多少
+	Logs.Loggers().Print(many.ModifiedCount)
+}
+
 func UpdateData() {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据

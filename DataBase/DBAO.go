@@ -16,6 +16,7 @@ type MainTable struct {
 	RawFiles      []string
 	UnityVersion  string
 	AnalyzeBucket string
+	AnalyzeType   string
 	StorageIp     string
 	Device        string
 	TestBeginTime string

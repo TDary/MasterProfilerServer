@@ -8,7 +8,8 @@ import (
 )
 
 func ListenAndServer(address string) {
-	http.HandleFunc("/RequestProfiler", RequestProfiler)
+	http.HandleFunc("/startanalyze", RequestProfiler)
+	http.HandleFunc("/stopanalyze", RequestProfiler)
 	http.HandleFunc("/SuccessProfiler", SuccessProfiler)
 	http.HandleFunc("/RquestClient", RequestClient)
 	http.HandleFunc("/ReAnalyze", ReProfiler) //重新解析  待评估
@@ -19,10 +20,10 @@ func ListenAndServer(address string) {
 
 //Http请求处理模块
 func DealReceivedMessage(msg string) int {
-	if strings.Contains(msg, "RequestProfiler") {
+	if strings.Contains(msg, "startanalyze") {
 		//Http://serverip:port/RequestProfiler?gameid=test&uuid=test&rawfiles=1.raw,2.raw,3.raw
 		beginMsg := strings.Split(msg, "?")[1]
-		go StorageParseMes(beginMsg)
+		go AnalyzeServer.AnalyzeRequest(beginMsg)
 		return 200
 	} else if strings.Contains(msg, "SuccessProfiler") {
 		suce := strings.Split(msg, "?")[1]
@@ -35,6 +36,10 @@ func DealReceivedMessage(msg string) int {
 	} else if strings.Contains(msg, "ReAnalyze") {
 		req := strings.Split(msg, "?")[1]
 		go AnalyzeServer.ReProfilerAna(req)
+		return 200
+	} else if strings.Contains(msg, "stopanalyze") { //要等最后一个采集文件上传成功才调用
+		stopMsg := strings.Split(msg, "?")[1]
+		go AnalyzeServer.StopAnalyzeRequest(stopMsg)
 		return 200
 	} else {
 		return 400

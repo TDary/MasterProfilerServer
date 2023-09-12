@@ -23,7 +23,7 @@ func SendBeginMessage(st DataBase.SubTable, m_ip string) {
 	//发送开始解析的相关数据信息
 	//前提是已经创建好数据表
 	request_Url := "http://" + m_ip + "/analyze?uuid=" + st.UUID +
-		"&rawfile=" + st.RawFile + "&unityversion=" + st.UnityVersion + "&analyzebucket=" + st.AnalyzeBucket
+		"&rawfile=" + st.RawFile + "&rawfilename=" + "testuuid/21314.zip" + "&unityversion=" + st.UnityVersion + "&analyzebucket=" + st.AnalyzeBucket
 	//超时时间：5秒
 	client := &http.Client{Timeout: 5 * time.Second}
 	resp, err := client.Get(request_Url)

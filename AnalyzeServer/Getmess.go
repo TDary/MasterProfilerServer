@@ -6,16 +6,19 @@ import (
 	"strings"
 )
 
-func ReceiveMes(mes string) {
+func ReceiveMes(mes string) (AnalyzeData, DataBase.MainTable) {
 	var mtable DataBase.MainTable
+	var resdata AnalyzeData
 	str1 := strings.Split(mes, "&")
 	for i := 0; i < len(str1); i++ {
 		if strings.Contains(str1[i], "gameid") { //解析gameid
 			gid := strings.Split(str1[i], "=")
 			mtable.AppKey = gid[1]
+			resdata.Appkey = mtable.AppKey
 		} else if strings.Contains(str1[i], "uuid") { //解析uuid
 			uid := strings.Split(str1[i], "=")
 			mtable.UUID = uid[1]
+			resdata.UUID = mtable.UUID
 		} else if strings.Contains(str1[i], "rawFiles") { //解析rawfiles
 			files := strings.Split(str1[i], "=")
 			fs := strings.Split(files[1], ",")
@@ -29,9 +32,15 @@ func ReceiveMes(mes string) {
 		} else if strings.Contains(str1[i], "unityVersion") { //解析unityVersion
 			na := strings.Split(str1[i], "=")
 			mtable.UnityVersion = na[1]
+			resdata.UnityVersion = mtable.UnityVersion
 		} else if strings.Contains(str1[i], "bucket") { //解析AnalyzeBucket
 			na := strings.Split(str1[i], "=")
 			mtable.AnalyzeBucket = na[1]
+			resdata.Bucket = mtable.AnalyzeBucket
+		} else if strings.Contains(str1[i], "anatype") { //解析类型
+			na := strings.Split(str1[i], "=")
+			mtable.AnalyzeType = na[1]
+			resdata.AnalyzeType = mtable.AnalyzeType
 		} else if strings.Contains(str1[i], "storageIp") { //解析StorageIp
 			na := strings.Split(str1[i], "=")
 			mtable.StorageIp = na[1]
@@ -50,7 +59,6 @@ func ReceiveMes(mes string) {
 		} else {
 			Logs.Loggers().Print("不存在对额外参数的解析:" + str1[i])
 			Logs.Loggers().Print("无法识别的完整参数：" + mes)
-			return
 		}
 	}
 	mtable.State = 0
@@ -58,6 +66,7 @@ func ReceiveMes(mes string) {
 	mtable.ScreenState = 0
 	DataBase.InsertMain(mtable)
 	GetSubData(mtable)
+	return resdata, mtable
 }
 
 func GetSubData(mtable DataBase.MainTable) {
@@ -78,4 +87,20 @@ func GetSubData(mtable DataBase.MainTable) {
 		stable.RawFile = mtable.RawFiles[i]
 		DataBase.InsertSub(stable)
 	}
+}
+
+//插入一条子表任务
+func InsertSubTable(mtable DataBase.MainTable, rawfile string) {
+	var stable DataBase.SubTable
+	stable.AppKey = mtable.AppKey
+	stable.UUID = mtable.UUID
+	stable.State = mtable.State
+	stable.Priority = mtable.Priority
+	stable.StorageIp = mtable.StorageIp
+	stable.UnityVersion = mtable.UnityVersion
+	stable.AnalyzeBucket = mtable.AnalyzeBucket
+	stable.AnalyzeIP = ""
+	stable.CsvPath = ""
+	stable.RawFile = rawfile
+	DataBase.InsertSub(stable)
 }

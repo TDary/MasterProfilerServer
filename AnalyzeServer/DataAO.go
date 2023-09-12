@@ -1,9 +1,10 @@
 package AnalyzeServer
 
 var config ConfigData
-var isStop bool                           //请求解析处理控制信号
 var isAnalyzeStop bool                    //完成解析处理控制信号
 var allclients map[string]*ProfilerClient //解析客户端及服务端配置
+var allAnalyzeClient []ClientState
+var stopMsg []EndData
 
 type SuccessData struct {
 	UUID    string
@@ -25,7 +26,38 @@ type ServerConfig struct {
 	Port string
 }
 type ConfigData struct {
-	Client       []ProfilerClient
-	MergeServer  ServerConfig
-	MasterServer ServerConfig
+	Client          []ProfilerClient
+	MergeServer     ServerConfig
+	MasterServer    ServerConfig
+	MinioServerPath string
+	MinioBucket     string
+	MinioRawBucket  string
+}
+
+type ClientState struct {
+	IpAddress string
+	State     string
+	Num       int
+}
+
+type AnalyzeData struct {
+	UUID         string
+	AnalyzeType  string
+	RawFile      string
+	RawFileName  string
+	UnityVersion string
+	Bucket       string
+	Appkey       string
+}
+
+type ReceiveDate struct {
+	Code  int    `json:"code"`
+	State string `json:"state"`
+	Num   int    `json:"num"`
+}
+
+type EndData struct {
+	Ip          string
+	UUID        string
+	LastRawFile string
 }
