@@ -10,7 +10,6 @@ type SuccessData struct {
 	UUID    string
 	IP      string
 	RawFile string
-	CsvPath string
 }
 
 type ProfilerClient struct {

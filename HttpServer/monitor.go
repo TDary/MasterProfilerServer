@@ -10,7 +10,7 @@ import (
 func ListenAndServer(address string) {
 	http.HandleFunc("/startanalyze", RequestProfiler)
 	http.HandleFunc("/stopanalyze", RequestProfiler)
-	http.HandleFunc("/SuccessProfiler", SuccessProfiler)
+	http.HandleFunc("/successprofiler", SuccessProfiler)
 	http.HandleFunc("/RquestClient", RequestClient)
 	http.HandleFunc("/ReAnalyze", ReProfiler) //重新解析  待评估
 	http.HandleFunc("/redirect", Redirect)
@@ -25,7 +25,7 @@ func DealReceivedMessage(msg string) int {
 		beginMsg := strings.Split(msg, "?")[1]
 		go AnalyzeServer.AnalyzeRequest(beginMsg)
 		return 200
-	} else if strings.Contains(msg, "SuccessProfiler") {
+	} else if strings.Contains(msg, "successprofiler") {
 		suce := strings.Split(msg, "?")[1]
 		go StorageSucessParseMes(suce)
 		return 200

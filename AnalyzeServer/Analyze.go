@@ -264,7 +264,7 @@ func CheckSub(uuid string) bool {
 func ModifySubState(wdata []SuccessData, allip []string) {
 	for _, val := range wdata {
 		allip = append(allip, val.IP)
-		DataBase.UpdateStates(val.RawFile, val.UUID, 1, val.IP, val.CsvPath)
+		DataBase.UpdateStates(val.RawFile, val.UUID, 1, val.IP)
 	}
 }
 
@@ -282,9 +282,6 @@ func ParseSuccessData(data string, wdata []SuccessData) []SuccessData {
 		} else if strings.Contains(splidata[i], "uuid") {
 			current := strings.Split(splidata[i], "=")
 			addData.UUID = current[1]
-		} else if strings.Contains(splidata[i], "csvpath") {
-			current := strings.Split(splidata[i], "=")
-			addData.CsvPath = current[1]
 		}
 	}
 	wdata = append(wdata, addData)

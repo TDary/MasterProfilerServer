@@ -7,9 +7,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func Del() {
+func Del(appkey string, uuid string) {
 	col := mong.Database("MyDB").Collection("MainTable")
-	many, err := col.DeleteMany(context.TODO(), bson.D{{"AppKey", "test"}})
+	many, err := col.DeleteMany(context.TODO(), bson.D{{Key: "AppKey", Value: appkey}, {Key: "UUID", Value: uuid}})
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}

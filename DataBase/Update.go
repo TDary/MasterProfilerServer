@@ -11,9 +11,9 @@ import (
 func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据
-	up := bson.D{{"$set", bson.D{{"AppKey", appkey}, {"UUID", uuid}}}}
+	up := bson.D{{"$set", bson.D{{"rawFiles", rawFiles}}}}
 	//更改元数据
-	many, err := col.UpdateMany(context.TODO(), bson.D{{"rawFiles", rawFiles}}, up)
+	many, err := col.UpdateMany(context.TODO(), bson.D{{"AppKey", appkey}, {"UUID", uuid}}, up)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -24,9 +24,9 @@ func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 func UpdateData() {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据
-	up := bson.D{{"$set", bson.D{{"AppKey", "tes2"}, {"UUID", "sahsala"}}}}
+	up := bson.D{{Key: "$set", Value: bson.D{{Key: "AppKey", Value: "tes2"}, {Key: "UUID", Value: "sahsala"}}}}
 	//更改元数据
-	many, err := col.UpdateMany(context.TODO(), bson.D{{"AppKey", "sasas"}}, up)
+	many, err := col.UpdateMany(context.TODO(), bson.D{{Key: "AppKey", Value: "sasas"}}, up)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -57,9 +57,9 @@ func ModifySubOne(objid int, state int) {
 }
 
 //更新子表成功状态
-func UpdateStates(rawfilename string, uuid string, state int, anaip string, csvpath string) {
+func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeip", anaip}, {"csvpath", csvpath}}}}
+	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeip", anaip}}}}
 	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfilename}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
