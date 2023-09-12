@@ -73,7 +73,6 @@ func SendRequestAnalyze(getdata AnalyzeData, m_ip string) {
 	if strings.Contains(result.String(), "ok") {
 		//客户端成功接收到开始解析的消息，降空闲进程数减1
 		Logs.Loggers().Print("解析客户端成功接收到消息，准备开始解析----")
-		ReduceRunC(m_ip, 1)
 	} else {
 		Logs.Loggers().Print("客户端未成功接收到消息----")
 		return

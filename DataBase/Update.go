@@ -11,9 +11,9 @@ import (
 func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据
-	up := bson.D{{"$set", bson.D{{"rawFiles", rawFiles}}}}
+	up := bson.D{{Key: "$set", Value: bson.D{{Key: "rawFiles", Value: rawFiles}}}}
 	//更改元数据
-	many, err := col.UpdateMany(context.TODO(), bson.D{{"AppKey", appkey}, {"UUID", uuid}}, up)
+	many, err := col.UpdateMany(context.TODO(), bson.D{{Key: "AppKey", Value: appkey}, {Key: "UUID", Value: uuid}}, up)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -37,8 +37,8 @@ func UpdateData() {
 //更新子表任务状态
 func ModifySub(uuid string, rawfile string, state int) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", state}}}}
-	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfile}}, update)
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "state", Value: state}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "uuid", Value: uuid}, {Key: "rawfile", Value: rawfile}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -48,8 +48,8 @@ func ModifySub(uuid string, rawfile string, state int) {
 //更新子表任务状态
 func ModifySubOne(objid int, state int) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", state}}}}
-	res, err := col.UpdateOne(context.TODO(), bson.D{{"_id", objid}}, update)
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "state", Value: state}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "_id", Value: objid}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -59,8 +59,8 @@ func ModifySubOne(objid int, state int) {
 //更新子表成功状态
 func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", state}, {"analyzeip", anaip}}}}
-	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfilename}}, update)
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "state", Value: state}, {Key: "analyzeip", Value: anaip}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "uuid", Value: uuid}, {Key: "rawfile", Value: rawfilename}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}
@@ -70,8 +70,8 @@ func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
 //将失败的任务进行重新解析
 func FindAndModify(uuid string, rawfile string) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{"$set", bson.D{{"state", 0}}}}
-	res, err := col.UpdateOne(context.TODO(), bson.D{{"uuid", uuid}, {"rawfile", rawfile}}, update)
+	update := bson.D{{Key: "$set", Value: bson.D{{Key: "state", Value: 0}}}}
+	res, err := col.UpdateOne(context.TODO(), bson.D{{Key: "uuid", Value: uuid}, {Key: "rawfile", Value: rawfile}}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}

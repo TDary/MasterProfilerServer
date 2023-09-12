@@ -1,8 +1,7 @@
 package AnalyzeServer
 
 var config ConfigData
-var isAnalyzeStop bool                    //完成解析处理控制信号
-var allclients map[string]*ProfilerClient //解析客户端及服务端配置
+var isAnalyzeStop bool //完成解析处理控制信号
 var allAnalyzeClient []ClientState
 var stopMsg []EndData
 
@@ -34,6 +33,7 @@ type ConfigData struct {
 }
 
 type ClientState struct {
+	Ip        string
 	IpAddress string
 	State     string
 	Num       int

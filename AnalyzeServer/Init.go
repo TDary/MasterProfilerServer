@@ -13,9 +13,13 @@ func InitServer() string {
 	if err != nil {
 		Logs.Loggers().Fatal(err)
 	}
-	allclients = make(map[string]*ProfilerClient, 20) //暂定赋予20个解析客户端
-	for i := 0; i < len(config.Client); i++ {
-		allclients[config.Client[i].Ip] = &config.Client[i]
+	var client ClientState
+	for _, val := range config.Client {
+		client.Ip = val.Ip
+		client.IpAddress = val.Ip + ":" + val.Port
+		client.Num = val.WorkerNumbers
+		client.State = "out"
+		allAnalyzeClient = append(allAnalyzeClient, client)
 	}
 	Minio.InitMinio(config.MinioServerPath, config.MinioBucket, config.MinioRawBucket)
 	Logs.Loggers().Print("初始化服务器配置成功----")

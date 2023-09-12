@@ -163,14 +163,13 @@ func AnalyzeSuccessUrl() {
 	var getanalyzeData string
 	var waitModifyState []SuccessData
 	isAnalyzeStop = true //初始状态系统关闭(避免刷日志)
-	for true {
+	for {
 		if !isAnalyzeStop {
 			if len(waitModifyState) == 50 {
 				//达到了允许存储的上限,直接进行修改状态值并释放进程
 				var allip []string
 				ModifySubState(waitModifyState, allip) //修改状态值
 				waitModifyState = nil                  //重置上限值
-				AddRunC(allip, 1)                      //释放进程
 				//开始判断是否有案例可以进行合并入库操作
 				CheckCaseToMerge()
 			}
@@ -184,7 +183,6 @@ func AnalyzeSuccessUrl() {
 				var allip []string
 				ModifySubState(waitModifyState, allip) //修改状态值
 				waitModifyState = nil                  //重置上限值
-				AddRunC(allip, 1)                      //释放进程
 				//开始判断是否有案例可以进行合并入库操作
 				CheckCaseToMerge()
 			}
@@ -321,19 +319,14 @@ func AddAnalyzeClient(data string) {
 	}
 }
 
-//开启客户端机器（对已加入组网的机器，进程已被释放完,重新设置并启用）
-func OpenClients(maip string, workNums int) {
-	allclients[maip].WorkerNumbers = workNums
-}
-
 //查询正在运行的工作机
 func CheckKey(key string) bool {
-	_, ok := allclients[key]
-	if ok {
-		return true
-	} else {
-		return false
+	for _, val := range allAnalyzeClient {
+		if val.Ip == key {
+			return true
+		}
 	}
+	return false
 }
 
 //重新解析
