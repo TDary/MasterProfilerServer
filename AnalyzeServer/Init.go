@@ -21,17 +21,25 @@ func InitServer() string {
 		client.State = "out"
 		allAnalyzeClient = append(allAnalyzeClient, client)
 	}
+	InitAnalyzeClient()
 	Minio.InitMinio(config.MinioServerPath, config.MinioBucket, config.MinioRawBucket)
 	Logs.Loggers().Print("初始化服务器配置成功----")
-	//测试是否反序列化成功
-	// fmt.Print(config)
 	serUrl := config.MasterServer.Ip + ":" + config.MasterServer.Port
 	return serUrl
 }
 
 //初始化解析器，先ping一下
 func InitAnalyzeClient() {
-	for i := 0; i < len(config.Client); i++ {
-
+	for _, val := range config.Client {
+		address := val.Ip + ":" + val.Port
+		rev := RequestClientState(address)
+		if rev.State != "" {
+			for key, val2 := range allAnalyzeClient {
+				if val2.IpAddress == address {
+					allAnalyzeClient[key].State = rev.State
+					break
+				}
+			}
+		}
 	}
 }

@@ -25,7 +25,6 @@ type ServerConfig struct {
 }
 type ConfigData struct {
 	Client          []ProfilerClient
-	MergeServer     ServerConfig
 	MasterServer    ServerConfig
 	MinioServerPath string
 	MinioBucket     string
