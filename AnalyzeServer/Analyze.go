@@ -4,7 +4,6 @@ import (
 	"MasterServer/DataBase"
 	"MasterServer/Logs"
 	"MasterServer/Minio"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -164,39 +163,6 @@ func AnalyzeRequest(data string) {
 				}
 			}
 		}
-	}
-}
-
-//添加客户端解析器进入组网
-func AddAnalyzeClient(data string) {
-	//当客户端解析器启动时会ping一次服务器，测试是否已将客户端解析器加入了组网,保证机器间正常运行
-	//只有当ping通的情况下才会将开关打开
-	//同时可以加入新的解析客户端
-	//同时在此处进行启动客户端解析
-	nowstr := strings.Split(data, "&")
-	nowip := strings.Split(nowstr[0], "=")
-	if CheckKey(nowip[1]) {
-		for i := 0; i < len(config.Client); i++ {
-			if config.Client[i].Ip == nowip[1] {
-				config.Client[i].State = true
-				Logs.Loggers().Print("该客户端解析打开成功----IP:" + nowip[1])
-				return
-			}
-		}
-	} else {
-		var newClient ProfilerClient
-		num := strings.Split(nowstr[1], "=")
-		newClient.Ip = nowip[1]
-		nums, err := strconv.Atoi(num[1])
-		if err != nil {
-			Logs.Loggers().Print("转换类型失败----")
-			return
-		}
-		newClient.WorkerNumbers = nums
-		newClient.WorkType = "Analyze"
-		newClient.State = true
-		config.Client = append(config.Client, newClient)
-		Logs.Loggers().Print("识别到新解析客户端，加入组网成功----")
 	}
 }
 

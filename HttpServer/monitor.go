@@ -11,7 +11,6 @@ func ListenAndServer(address string) {
 	http.HandleFunc("/startanalyze", RequestProfiler)
 	http.HandleFunc("/stopanalyze", RequestProfiler)
 	http.HandleFunc("/successprofiler", SuccessProfiler)
-	http.HandleFunc("/RquestClient", RequestClient)
 	http.HandleFunc("/ReAnalyze", ReProfiler) //重新解析  待评估
 	http.HandleFunc("/redirect", Redirect)
 	//Http监听函数
@@ -28,10 +27,6 @@ func DealReceivedMessage(msg string) int {
 	} else if strings.Contains(msg, "successprofiler") {
 		suce := strings.Split(msg, "?")[1]
 		go StorageSucessParseMes(suce)
-		return 200
-	} else if strings.Contains(msg, "RquestClient") {
-		req := strings.Split(msg, "?")[1]
-		go AnalyzeServer.AddAnalyzeClient(req)
 		return 200
 	} else if strings.Contains(msg, "ReAnalyze") {
 		req := strings.Split(msg, "?")[1]
@@ -75,21 +70,6 @@ func SuccessProfiler(w http.ResponseWriter, r *http.Request) {
 		resData = "ok"
 	} else {
 		resData = "Fail"
-	}
-	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	jsonByte, _ := json.Marshal(resData)               //转json
-	w.Write(jsonByte)
-}
-
-//请求并入组网
-func RequestClient(w http.ResponseWriter, r *http.Request) {
-	var resData string
-	RequestUrlData := r.URL.String()
-	resMes := DealReceivedMessage(RequestUrlData)
-	if resMes == 200 {
-		resData = "success"
-	} else {
-		resData = "Request Fail"
 	}
 	w.Header().Set("Content-Type", "application/json") //设置响应内容
 	jsonByte, _ := json.Marshal(resData)               //转json

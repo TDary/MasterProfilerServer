@@ -235,6 +235,9 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 		frame := 1
 		caseFunRow.UUID = maintable.UUID
 		caseFunRow.Name = vals.Name
+		if caseFunRow.Name == "Main Thread" { //暂时不要放入这个数据，以后要的话再说
+			continue
+		}
 		for _, va2 := range vals.Frames {
 			var funrowInfo DataBase.FunRowInfo
 			funrowInfo.Frame = int32(frame)
