@@ -26,7 +26,7 @@ func GetData(tmp string) string {
 
 	result, err := q.Get(context.TODO())
 	if err != nil && err == queue.ErrQueueEmpty {
-		Logs.Loggers().Print(err)
+		//Logs.Loggers().Print(err)
 		return ""
 	}
 

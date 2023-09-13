@@ -18,30 +18,27 @@ func AnalyzeSuccessUrl() {
 	//也是进行轮询查找,一次查找较多的数据
 	var getanalyzeData string
 	var waitModifyState []SuccessData
-	isAnalyzeStop = true //初始状态系统关闭(避免刷日志)
 	for {
-		if !isAnalyzeStop {
-			if len(waitModifyState) == 50 {
-				//达到了允许存储的上限,直接进行修改状态值
-				var allip []string
-				ModifySubState(waitModifyState, allip) //修改状态值
-				waitModifyState = nil                  //重置上限值
-				//开始判断是否有案例可以进行合并入库操作
-				CheckCaseToMerge()
-			}
-			getanalyzeData = GetSuccessMes("/HttpServer/ParseQueSuccessQue")
-			if getanalyzeData != "" {
-				waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
-			} else {
-				Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
-				isAnalyzeStop = true
-				//开始修改子案例状态,同时释放解析进程
-				var allip []string
-				ModifySubState(waitModifyState, allip) //修改状态值
-				waitModifyState = nil                  //重置上限值
-				//开始判断是否有案例可以进行合并入库操作
-				CheckCaseToMerge()
-			}
+		if len(waitModifyState) == 50 {
+			//达到了允许存储的上限,直接进行修改状态值
+			var allip []string
+			ModifySubState(waitModifyState, allip) //修改状态值
+			waitModifyState = nil                  //重置上限值
+			//开始判断是否有案例可以进行合并入库操作
+			CheckCaseToMerge()
+		}
+		getanalyzeData = GetSuccessMes("/HttpServer/ParseQueSuccessQue")
+		if getanalyzeData != "" {
+			waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
+		} else {
+			Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
+			isAnalyzeStop = true
+			//开始修改子案例状态,同时释放解析进程
+			var allip []string
+			ModifySubState(waitModifyState, allip) //修改状态值
+			waitModifyState = nil                  //重置上限值
+			//开始判断是否有案例可以进行合并入库操作
+			CheckCaseToMerge()
 		}
 	}
 }
@@ -258,7 +255,6 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 
 //开始合并且入库操作
 func MergeBegin(maintable DataBase.MainTable) {
-	//todo:拉取分析文件进行反序列化并进行合并
 	dataPath := config.MergePath + "/" + maintable.UUID
 	_, err := os.Stat(dataPath)
 	if err != nil {
@@ -285,8 +281,9 @@ func CheckCaseToMerge() {
 			currentCase := CheckSub(val.UUID)
 			if currentCase {
 				//当前案例可以进行合并操作了
+				DataBase.ModifyMainState(val.AppKey, val.UUID, 3)
 				Logs.Loggers().Print("开始合并案例,UUID:" + val.UUID)
-				MergeBegin(val)
+				go MergeBegin(val)
 			} else {
 				continue
 			}
@@ -294,12 +291,12 @@ func CheckCaseToMerge() {
 	} else {
 		Logs.Loggers().Print("无待合并的案例----")
 	}
+	waitCase = nil //上面流程完毕清除一次
 }
 
 //检查子表
 func CheckSub(uuid string) bool {
-	var subt []DataBase.SubTable
-	subt = DataBase.FindSubTableData(uuid)
+	subt := DataBase.FindSubTableData(uuid)
 	if subt != nil {
 		for i := 0; i < len(subt); i++ {
 			if subt[i].State == 0 {

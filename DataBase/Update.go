@@ -7,6 +7,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+func ModifyMainState(appkey string, uuid string, state int) {
+	col := mong.Database("MyDB").Collection("MainTable")
+	//更改数据
+	up := bson.D{{Key: "$set", Value: bson.D{{Key: "State", Value: state}}}}
+	//更改元数据
+	many, err := col.UpdateMany(context.TODO(), bson.D{{Key: "AppKey", Value: appkey}, {Key: "UUID", Value: uuid}}, up)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+	//打印改变了多少
+	Logs.Loggers().Print(many.ModifiedCount)
+}
+
 //更新主表状态值
 func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 	col := mong.Database("MyDB").Collection("MainTable")
