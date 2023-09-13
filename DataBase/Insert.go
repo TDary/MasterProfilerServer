@@ -55,3 +55,25 @@ func InsertsSub(datas []SubTable) {
 		Logs.Loggers().Print("批量插入子表数据成功----")
 	}
 }
+
+func InsertSimpleData(datas []InsertSimple) {
+	col := mong.Database("MyDB").Collection("SimpleData")
+	indata := []interface{}{datas}
+	_, err := col.InsertMany(context.TODO(), indata)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	} else {
+		Logs.Loggers().Print("SimpleData插入数据成功----")
+	}
+}
+
+func InsertCaseFunRow(datas []CaseFunRow) {
+	col := mong.Database("MyDB").Collection("FunRow")
+	indata := []interface{}{datas}
+	_, err := col.InsertMany(context.TODO(), indata)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	} else {
+		Logs.Loggers().Print("SimpleData插入数据成功----")
+	}
+}

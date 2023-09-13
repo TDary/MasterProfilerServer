@@ -77,6 +77,17 @@ func GetLastRawFileIsSend(uuid string, rawFiles []string) (int, string) {
 	return -1, "" //继续等待
 }
 
+//将原始文件进行排序
+func SortRawFils(rawfiles []string) {
+	for i := 0; i < len(rawfiles)-1; i++ {
+		for j := 0; j < len(rawfiles)-i-1; j++ {
+			if strings.Split(rawfiles[j], ".")[0] > strings.Split(rawfiles[j+1], ".")[0] {
+				rawfiles[j], rawfiles[j+1] = rawfiles[j+1], rawfiles[j]
+			}
+		}
+	}
+}
+
 //解析url进行结构化并创建数据库表数据
 func AnalyzeRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
@@ -88,6 +99,7 @@ func AnalyzeRequest(data string) {
 		if state == 0 {
 			//所有任务都已完成，在此打断循环断开采集任务
 			//更新主表数据库
+			SortRawFils(rawFiles) //排一下序，因为原有的插入顺序不一定正确
 			DataBase.UpdateMainTable(getdata.Appkey, getdata.UUID, rawFiles)
 			break
 		} else if state == 1 && file != "" {
@@ -107,7 +119,8 @@ func AnalyzeRequest(data string) {
 				SendRequestAnalyze(getdata, val.IpAddress)
 				//插入数据库子任务
 				InsertSubTable(mtable, getdata.RawFile)
-				//更新数据库主表
+				//更新数据库主表，先排序，这里用了冒泡
+				SortRawFils(rawFiles)
 				DataBase.UpdateMainTable(getdata.Appkey, getdata.UUID, rawFiles)
 				break
 			}

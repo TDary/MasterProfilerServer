@@ -39,3 +39,25 @@ type SubTable struct {
 	State         int
 	Priority      string
 }
+
+type InsertSimple struct {
+	UUID  string
+	Name  string
+	Valus []float32
+}
+
+type CaseFunRow struct {
+	UUID   string
+	Name   string
+	Frames []FunRowInfo
+}
+
+type FunRowInfo struct {
+	Frame   int32
+	Total   int32
+	Self    int32
+	Calls   int32
+	Gcalloc int32
+	Timems  int32
+	Selfms  int32
+}

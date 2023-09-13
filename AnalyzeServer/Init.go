@@ -5,6 +5,7 @@ import (
 	"MasterServer/Minio"
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
 
 func InitServer() string {
@@ -12,6 +13,11 @@ func InitServer() string {
 	var err = json.Unmarshal(data, &config)
 	if err != nil {
 		Logs.Loggers().Fatal(err)
+	}
+	_, err = os.Stat(config.MergePath)
+	if err != nil {
+		Logs.Loggers().Printf("当前文件夹%s不存在，重新创建中！", config.MergePath)
+		os.Mkdir(config.MergePath, 0755)
 	}
 	var client ClientState
 	for _, val := range config.Client {

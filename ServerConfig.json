@@ -20,5 +20,6 @@
     },
     "MinioServerPath":"10.11.144.31:8001",
     "MinioBucket":"analyzedata",
-    "MinioRawBucket":"rawdata"
+    "MinioRawBucket":"rawdata",
+    "MergePath":"E:/MergeData"
 }

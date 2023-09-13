@@ -29,6 +29,7 @@ type ConfigData struct {
 	MinioServerPath string
 	MinioBucket     string
 	MinioRawBucket  string
+	MergePath       string
 }
 
 type ClientState struct {
