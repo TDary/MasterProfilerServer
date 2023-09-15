@@ -5,7 +5,6 @@ import (
 	"MasterServer/Logs"
 	"MasterServer/Minio"
 	"strings"
-	"time"
 )
 
 //停止采集信号
@@ -16,15 +15,11 @@ func StopAnalyzeRequest(mes string) {
 		if strings.Contains(str1[i], "uuid") { //解析gameid
 			uid := strings.Split(str1[i], "=")
 			data.UUID = uid[1]
-		} else if strings.Contains(str1[i], "ip") { //解析uuid
-			currentIp := strings.Split(str1[i], "=")
-			data.Ip = currentIp[1]
 		} else if strings.Contains(str1[i], "lastfile") { //解析rawfiles
 			file := strings.Split(str1[i], "=")
 			data.LastRawFile = file[1]
 		} else {
 			Logs.Loggers().Print("不存在对额外参数的解析:" + str1[i])
-			Logs.Loggers().Print("无法识别的完整参数：" + mes)
 		}
 	}
 	stopMsg = append(stopMsg, data)
@@ -92,7 +87,95 @@ func AnalyzeRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
 	getdata, mtable := ReceiveMes(data)
 	var rawFiles []string
+	quePath := "./ServerQue/" + getdata.UUID + "_AnalyzeQue"
 	for {
+		analze := GetSuccessMes(quePath)
+		if analze != "" {
+			res := GetAnalyzeData(analze)
+			//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
+			GetIdleAnalyzeClient()
+			for _, val := range allAnalyzeClient {
+				SendRequestAnalyze(res, val.Ip)
+				//插入数据库子任务
+				InsertSubTable(mtable, res.RawFile)
+				//更新数据库主表，先排序，这里用了冒泡
+				//SortRawFils(rawFiles)
+				break
+			}
+			rawFiles = append(rawFiles, res.RawFile)
+		}
+		state, file := GetLastRawFileIsSend(getdata.UUID, rawFiles)
+		if state == 0 {
+			//所有任务都已完成，在此打断循环断开采集任务
+			//更新主表数据库
+			//SortRawFils(rawFiles) //排一下序，因为原有的插入顺序不一定正确
+			DataBase.UpdateMainTable(getdata.Appkey, getdata.UUID, rawFiles)
+			break
+		} else if state == 1 && file != "" {
+			//还有最后一个没发送解析,在此发送
+			rawFiles = append(rawFiles, file)
+			//队列中拿rawfilename
+			getanalyzeData := GetSuccessMes(quePath)
+			if getanalyzeData != "" {
+				res := GetAnalyzeData(getanalyzeData)
+				if res.RawFile == file {
+					getdata.RawFile = res.RawFile
+					getdata.RawFileName = res.RawFileName
+					//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
+					GetIdleAnalyzeClient()
+					for _, val := range allAnalyzeClient {
+						SendRequestAnalyze(getdata, val.Ip)
+						//插入数据库子任务
+						InsertSubTable(mtable, getdata.RawFile)
+						//更新数据库主表，先排序，这里用了冒泡
+						//SortRawFils(rawFiles)
+						DataBase.UpdateMainTable(getdata.Appkey, getdata.UUID, rawFiles)
+						break
+					}
+					break
+				}
+			}
+		}
+	}
+	for {
+		rFiles := Minio.SearchObjectOfBucket(getdata.UUID) //检测 并发送解析请求
+		for i := 0; i < len(rFiles); i++ {
+			Logs.Loggers().Print("rawfileName:" + rFiles[i])
+			getdata.RawFileName = rFiles[i]                    //uuid/1231.zip
+			getdata.RawFile = strings.Split(rFiles[i], "/")[1] //21313.zip
+			if len(rawFiles) == 0 {
+				rawFiles = append(rawFiles, getdata.RawFile)
+				//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
+				GetIdleAnalyzeClient()
+				for _, val := range allAnalyzeClient {
+					SendRequestAnalyze(getdata, val.IpAddress)
+					//插入数据库子任务
+					isMergeStop = false
+					InsertSubTable(mtable, getdata.RawFile)
+					break
+				}
+			} else {
+				//检测是否含有已发送的任务
+				isHasSame := false
+				for i := 0; i < len(rawFiles); i++ {
+					if rawFiles[i] == getdata.RawFile {
+						isHasSame = true
+						break
+					}
+				}
+				if !isHasSame {
+					//该源没有相同的，可进行发送解析
+					GetIdleAnalyzeClient()
+					for _, val := range allAnalyzeClient {
+						SendRequestAnalyze(getdata, val.IpAddress)
+						//插入数据库子任务
+						isMergeStop = false
+						InsertSubTable(mtable, getdata.RawFile)
+						break
+					}
+				}
+			}
+		}
 		//检测是否有停止解析请求,开一个数组，保存停止解析消息
 		state, file := GetLastRawFileIsSend(getdata.UUID, rawFiles)
 		if state == 0 {
@@ -126,42 +209,6 @@ func AnalyzeRequest(data string) {
 			break //打断循环
 		} else {
 			//wait
-		}
-		time.Sleep(10 * time.Second)                       //每隔10秒检测一次
-		rFiles := Minio.SearchObjectOfBucket(getdata.UUID) //检测 并发送解析请求
-		for i := 0; i < len(rFiles); i++ {
-			getdata.RawFileName = rFiles[i]
-			getdata.RawFile = strings.Split(rFiles[i], "/")[1]
-			if len(rawFiles) == 0 {
-				rawFiles = append(rawFiles, getdata.RawFile)
-				//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
-				GetIdleAnalyzeClient()
-				for _, val := range allAnalyzeClient {
-					SendRequestAnalyze(getdata, val.IpAddress)
-					//插入数据库子任务
-					InsertSubTable(mtable, getdata.RawFile)
-					break
-				}
-			} else {
-				//检测是否含有已发送的任务
-				isHasSame := false
-				for i := 0; i < len(rawFiles); i++ {
-					if rawFiles[i] == getdata.RawFile {
-						isHasSame = true
-						break
-					}
-				}
-				if !isHasSame {
-					//该源没有相同的，可进行发送解析
-					GetIdleAnalyzeClient()
-					for _, val := range allAnalyzeClient {
-						SendRequestAnalyze(getdata, val.IpAddress)
-						//插入数据库子任务
-						InsertSubTable(mtable, getdata.RawFile)
-						break
-					}
-				}
-			}
 		}
 	}
 }

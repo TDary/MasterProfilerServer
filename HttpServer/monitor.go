@@ -2,97 +2,91 @@ package HttpServer
 
 import (
 	"MasterServer/AnalyzeServer"
-	"encoding/json"
-	"net/http"
+	"MasterServer/Logs"
+	"net"
 	"strings"
 )
 
+func HandleConnection(conn net.Conn) {
+	defer conn.Close()
+
+	// 处理连接逻辑
+	// 在这里可以读取和写入数据
+	AnalyzeServer.AddConnectior(conn)
+	message := "Welcome to the server!\n"
+	conn.Write([]byte(message))
+
+	for {
+		// 示例：从客户端读取数据并打印
+		buffer := make([]byte, 1024)
+		n, err := conn.Read(buffer)
+		if err != nil && n == 0 {
+			Logs.Loggers().Printf("Error reading from connection: %s", err.Error())
+			//断开连接，清除池子
+			remoteAddr := conn.RemoteAddr().(*net.TCPAddr)
+			currentIp := remoteAddr.IP.String()
+			AnalyzeServer.ClearOneConn(currentIp)
+			return
+		}
+		if len(buffer) != 0 {
+			res := string(buffer[:n])
+			if strings.Contains(res, "startanalyze") {
+				Logs.Loggers().Print("接收到开始采集消息----", res)
+				beginMsg := strings.Split(res, "?")[1] //startanalyze?...
+				go AnalyzeServer.AnalyzeRequest(beginMsg)
+				message = "ok"
+				conn.Write([]byte(message))
+			} else if strings.Contains(res, "requestanalyze") {
+				Logs.Loggers().Print("接收到申请解析源文件的消息----", res)
+				ana := strings.Split(res, "?")[1] //requestanalyze?uuid=test&rawfile=123123.zip&rawfilename=uuid/1231.zip&unityversion=12313&analyzebucket=ads&analyzeType=
+				go StorageAnalyzeParse(ana)
+				message = "ok"
+				conn.Write([]byte(message))
+			} else if strings.Contains(res, "successprofiler") {
+				Logs.Loggers().Print("接收到解析成功消息----", res)
+				suce := strings.Split(res, "?")[1]
+				go StorageSucessParseMes(suce)
+				message = "ok"
+				conn.Write([]byte(message))
+			} else if strings.Contains(res, "rquestclient") {
+				Logs.Loggers().Print("接收到解析器请求消息----", res)
+				message = "ok"
+				conn.Write([]byte(message))
+			} else if strings.Contains(res, "stopanalyze") {
+				Logs.Loggers().Print("接收到停止采集消息----", res)
+				stopMsg := strings.Split(res, "?")[1]
+				go AnalyzeServer.StopAnalyzeRequest(stopMsg)
+				message = "ok"
+				conn.Write([]byte(message))
+			} else if strings.Contains(res, "ReAnalyze") {
+				Logs.Loggers().Print("接收到重新解析消息----", res)
+				req := strings.Split(res, "?")[1]
+				go AnalyzeServer.ReProfilerAna(req)
+			} else {
+				Logs.Loggers().Print("receive Data:", res)
+				message = "ok"
+				conn.Write([]byte(message))
+			}
+		}
+	}
+}
+
 func ListenAndServer(address string) {
-	http.HandleFunc("/startanalyze", RequestProfiler)
-	http.HandleFunc("/stopanalyze", RequestProfiler)
-	http.HandleFunc("/successprofiler", SuccessProfiler)
-	http.HandleFunc("/ReAnalyze", ReProfiler) //重新解析  待评估
-	http.HandleFunc("/redirect", Redirect)
-	//Http监听函数
-	http.ListenAndServe(address, nil)
-}
-
-//Http请求处理模块
-func DealReceivedMessage(msg string) int {
-	if strings.Contains(msg, "startanalyze") {
-		//Http://serverip:port/RequestProfiler?gameid=test&uuid=test&rawfiles=1.raw,2.raw,3.raw
-		beginMsg := strings.Split(msg, "?")[1]
-		go AnalyzeServer.AnalyzeRequest(beginMsg)
-		return 200
-	} else if strings.Contains(msg, "successprofiler") {
-		suce := strings.Split(msg, "?")[1]
-		go StorageSucessParseMes(suce)
-		return 200
-	} else if strings.Contains(msg, "ReAnalyze") {
-		req := strings.Split(msg, "?")[1]
-		go AnalyzeServer.ReProfilerAna(req)
-		return 200
-	} else if strings.Contains(msg, "stopanalyze") { //要等最后一个采集文件上传成功才调用
-		stopMsg := strings.Split(msg, "?")[1]
-		go AnalyzeServer.StopAnalyzeRequest(stopMsg)
-		return 200
-	} else {
-		return 400
-		//TODO:扩展处理模块
+	listener, err := net.Listen("tcp", address)
+	if err != nil {
+		Logs.Loggers().Fatalf("Failed to listen: %s", err.Error())
 	}
-}
+	defer listener.Close()
+	Logs.Loggers().Printf("Server listening on %s\n", address)
+	for {
+		// 接受新连接
+		conn, err := listener.Accept()
+		if err != nil {
+			Logs.Loggers().Printf("Failed to accept connection: %s", err.Error())
+			continue
+		}
 
-//请求解析响应模块
-func RequestProfiler(w http.ResponseWriter, r *http.Request) {
-	var resData string
-	RequestUrlData := r.URL.String()
-	resMes := DealReceivedMessage(RequestUrlData)
-	if resMes == 200 {
-		resData = "success"
-	} else {
-		resData = "Request Fail"
+		// 处理连接
+		go HandleConnection(conn)
 	}
-	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	res := Res{
-		Code: resMes,
-		Data: resData,
-	}
-	jsonByte, _ := json.Marshal(res) //转json
-	w.Write(jsonByte)
-}
-
-//解析成功消息回调处理
-func SuccessProfiler(w http.ResponseWriter, r *http.Request) {
-	var resData string
-	RequestUrlData := r.URL.String()
-	resMes := DealReceivedMessage(RequestUrlData)
-	if resMes == 200 {
-		resData = "ok"
-	} else {
-		resData = "Fail"
-	}
-	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	jsonByte, _ := json.Marshal(resData)               //转json
-	w.Write(jsonByte)
-}
-
-//重新解析失败的源文件
-func ReProfiler(w http.ResponseWriter, r *http.Request) {
-	var resData string
-	RequestUrlData := r.URL.String()
-	resMes := DealReceivedMessage(RequestUrlData)
-	if resMes == 200 {
-		resData = "ok"
-	} else {
-		resData = "Fail"
-	}
-	w.Header().Set("Content-Type", "application/json") //设置响应内容
-	jsonByte, _ := json.Marshal(resData)               //转json
-	w.Write(jsonByte)
-}
-
-//重定向功能模块(测试中，可添加其他功能)
-func Redirect(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Localtion", "https://www.baidu.com")
-	w.WriteHeader(302) //设置响应状态码
 }

@@ -31,7 +31,7 @@ func SearchObjectOfBucket(uuid string) []string {
 				ishasSeem = true
 			}
 			if !ishasSeem { //没同项，新增
-				allrawfile = append(allrawfile, object.Key)
+				allrawfile = append(allrawfile, object.Key) //uuid/21313.zip
 			}
 		}
 	}

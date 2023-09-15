@@ -11,6 +11,7 @@ import (
 func InitServer() string {
 	var data, _ = ioutil.ReadFile("./ServerConfig.json")
 	var err = json.Unmarshal(data, &config)
+	var client ClientState
 	if err != nil {
 		Logs.Loggers().Fatal(err)
 	}
@@ -19,7 +20,13 @@ func InitServer() string {
 		Logs.Loggers().Printf("当前文件夹%s不存在，重新创建中！", config.MergePath)
 		os.Mkdir(config.MergePath, 0755)
 	}
-	var client ClientState
+
+	filepath := "./ServerQue"
+	_, err = os.Stat(filepath)
+	if err != nil {
+		os.Mkdir(filepath, 0755)
+	}
+
 	for _, val := range config.Client {
 		client.Ip = val.Ip
 		client.IpAddress = val.Ip + ":" + val.Port

@@ -16,8 +16,16 @@ func main() {
 	ServerUrl := AnalyzeServer.InitServer()
 	//启动开始处理完成解析消息系统
 	go AnalyzeServer.AnalyzeSuccessUrl()
-	//启动Http监听
+	//启动socket监听
 	HttpServer.ListenAndServer(ServerUrl)
+
+	// test := "{\"code\":200,\"state\":\"idle\",\"num\":4}"
+	// var rece AnalyzeServer.ReceiveDate
+	// err := json.Unmarshal([]byte(test), &rece)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Print(rece)
 }
 
 //todo:

@@ -2,12 +2,6 @@
     "Client" : 
     [
         {
-            "Ip": "10.11.145.15",
-            "port":"7950",
-            "WorkerNumbers" : 4,
-            "WorkType" : "Analyze"
-        },
-        {
             "Ip": "10.11.144.31",
             "port":"7950",
             "WorkerNumbers" : 4,

@@ -19,26 +19,28 @@ func AnalyzeSuccessUrl() {
 	var getanalyzeData string
 	var waitModifyState []SuccessData
 	for {
-		if len(waitModifyState) == 50 {
-			//达到了允许存储的上限,直接进行修改状态值
-			var allip []string
-			ModifySubState(waitModifyState, allip) //修改状态值
-			waitModifyState = nil                  //重置上限值
-			//开始判断是否有案例可以进行合并入库操作
-			CheckCaseToMerge()
-		}
-		getanalyzeData = GetSuccessMes("/HttpServer/ParseQueSuccessQue")
-		if getanalyzeData != "" {
-			waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
-		} else {
-			Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
-			isAnalyzeStop = true
-			//开始修改子案例状态,同时释放解析进程
-			var allip []string
-			ModifySubState(waitModifyState, allip) //修改状态值
-			waitModifyState = nil                  //重置上限值
-			//开始判断是否有案例可以进行合并入库操作
-			CheckCaseToMerge()
+		if !isMergeStop {
+			if len(waitModifyState) == 50 {
+				//达到了允许存储的上限,直接进行修改状态值
+				var allip []string
+				ModifySubState(waitModifyState, allip) //修改状态值
+				waitModifyState = nil                  //重置上限值
+				//开始判断是否有案例可以进行合并入库操作
+				CheckCaseToMerge()
+			}
+			getanalyzeData = GetSuccessMes("./ServerQue/ParseQueSuccessQue")
+			if getanalyzeData != "" {
+				waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
+			} else {
+				Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
+				//开始修改子案例状态,同时释放解析进程
+				isMergeStop = true
+				var allip []string
+				ModifySubState(waitModifyState, allip) //修改状态值
+				waitModifyState = nil                  //重置上限值
+				//开始判断是否有案例可以进行合并入库操作
+				CheckCaseToMerge()
+			}
 		}
 	}
 }
@@ -143,7 +145,9 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 		}
 		insertDatas = append(insertDatas, item)
 	}
+	//入库
 	DataBase.InsertSimpleData(insertDatas)
+	DataBase.ModifyMainState(maintable.AppKey, maintable.UUID, 1)
 }
 
 //合并funprofiler数据
@@ -251,6 +255,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	}
 	//入库
 	DataBase.InsertCaseFunRow(insertCaseFunRow)
+	DataBase.ModifyMainState(maintable.AppKey, maintable.UUID, 1)
 }
 
 //开始合并且入库操作

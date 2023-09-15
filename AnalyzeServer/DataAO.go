@@ -1,9 +1,12 @@
 package AnalyzeServer
 
+import "net"
+
 var config ConfigData
-var isAnalyzeStop bool //完成解析处理控制信号
 var allAnalyzeClient []ClientState
 var stopMsg []EndData
+var isMergeStop bool
+var allconnector []ConnectPool //连接池
 
 type SuccessData struct {
 	UUID    string
@@ -56,7 +59,11 @@ type ReceiveDate struct {
 }
 
 type EndData struct {
-	Ip          string
 	UUID        string
 	LastRawFile string
+}
+
+type ConnectPool struct { //以IP为区分，存储连接池对象
+	Ip   string
+	Conn net.Conn
 }

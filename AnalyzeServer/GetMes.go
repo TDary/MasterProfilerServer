@@ -14,6 +14,34 @@ func GetSuccessMes(data string) string {
 	return res
 }
 
+func GetAnalyzeData(data string) AnalyzeData {
+	var res AnalyzeData
+	str1 := strings.Split(data, "&")
+	for i := 0; i < len(str1); i++ {
+		if strings.Contains(str1[i], "uuid") { //解析uuid
+			uid := strings.Split(str1[i], "=")
+			res.UUID = uid[1]
+		} else if strings.Contains(str1[i], "rawfile") { //解析rawfiles
+			file := strings.Split(str1[i], "=")
+			res.RawFile = file[1]
+		} else if strings.Contains(str1[i], "rawfilename") { //解析gamename
+			na := strings.Split(str1[i], "=")
+			res.RawFileName = na[1]
+		} else if strings.Contains(str1[i], "unityVersion") { //解析unityVersion
+			na := strings.Split(str1[i], "=")
+			res.UnityVersion = na[1]
+		} else if strings.Contains(str1[i], "analyzebucket") { //解析AnalyzeBucket
+			na := strings.Split(str1[i], "=")
+			res.Bucket = na[1]
+		} else if strings.Contains(str1[i], "analyzeType") { //解析类型
+			na := strings.Split(str1[i], "=")
+			res.AnalyzeType = na[1]
+		}
+	}
+	return res
+}
+
+//接受开始采集消息
 func ReceiveMes(mes string) (AnalyzeData, DataBase.MainTable) {
 	var mtable DataBase.MainTable
 	var resdata AnalyzeData
@@ -29,8 +57,10 @@ func ReceiveMes(mes string) (AnalyzeData, DataBase.MainTable) {
 			resdata.UUID = mtable.UUID
 		} else if strings.Contains(str1[i], "rawFiles") { //解析rawfiles
 			files := strings.Split(str1[i], "=")
-			fs := strings.Split(files[1], ",")
-			mtable.RawFiles = fs
+			if files[1] != "" {
+				fs := strings.Split(files[1], ",")
+				mtable.RawFiles = fs
+			}
 		} else if strings.Contains(str1[i], "gameName") { //解析gamename
 			na := strings.Split(str1[i], "=")
 			mtable.GameName = na[1]
@@ -66,13 +96,15 @@ func ReceiveMes(mes string) (AnalyzeData, DataBase.MainTable) {
 			mtable.Priority = na[1]
 		} else {
 			Logs.Loggers().Print("不存在对额外参数的解析:" + str1[i])
-			Logs.Loggers().Print("无法识别的完整参数：" + mes)
 		}
 	}
 	mtable.State = 0
 	mtable.ScreenFiles = nil
 	mtable.ScreenState = 0
-	DataBase.InsertMain(mtable)
+	if len(mtable.RawFiles) == 0 {
+		mtable.RawFiles = nil
+	}
+	DataBase.InsertMain(mtable) //todo:判断是否有已经存在的Uuid，有的话不插入
 	GetSubData(mtable)
 	return resdata, mtable
 }
