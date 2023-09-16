@@ -64,6 +64,7 @@ type EndData struct {
 }
 
 type ConnectPool struct { //以IP为区分，存储连接池对象
-	Ip   string
-	Conn net.Conn
+	Ip       string
+	Marchine string //机器标识
+	Conn     net.Conn
 }

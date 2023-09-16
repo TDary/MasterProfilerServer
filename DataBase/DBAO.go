@@ -28,16 +28,10 @@ type MainTable struct {
 }
 
 type SubTable struct {
-	AppKey        string
-	UUID          string
-	RawFile       string
-	CsvPath       string
-	UnityVersion  string
-	AnalyzeBucket string
-	AnalyzeIP     string
-	StorageIp     string
-	State         int
-	Priority      string
+	UUID      string
+	RawFile   string
+	AnalyzeIP string
+	State     int
 }
 
 type InsertSimple struct {

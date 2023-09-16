@@ -34,10 +34,3 @@ func RequestClientState(m_ip string) ReceiveDate {
 	}
 	return ReceiveDate{}
 }
-
-//通过socket发送解析请求
-func SendRequestAnalyze(getdata AnalyzeData, ip string) {
-	requestMsg := "analyze?uuid=" + getdata.UUID +
-		"&rawfile=" + getdata.RawFile + "&rawfilename=" + getdata.RawFileName + "&unityversion=" + getdata.UnityVersion + "&analyzebucket=" + getdata.Bucket
-	GetConn(ip).Write([]byte(requestMsg))
-}

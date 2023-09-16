@@ -12,20 +12,17 @@ func HandleConnection(conn net.Conn) {
 
 	// 处理连接逻辑
 	// 在这里可以读取和写入数据
-	AnalyzeServer.AddConnectior(conn)
+
 	message := "Welcome to the server!\n"
 	conn.Write([]byte(message))
 
 	for {
 		// 示例：从客户端读取数据并打印
-		buffer := make([]byte, 1024)
+		buffer := make([]byte, 2048)
 		n, err := conn.Read(buffer)
 		if err != nil && n == 0 {
 			Logs.Loggers().Printf("Error reading from connection: %s", err.Error())
 			//断开连接，清除池子
-			remoteAddr := conn.RemoteAddr().(*net.TCPAddr)
-			currentIp := remoteAddr.IP.String()
-			AnalyzeServer.ClearOneConn(currentIp)
 			return
 		}
 		if len(buffer) != 0 {
@@ -40,6 +37,7 @@ func HandleConnection(conn net.Conn) {
 				Logs.Loggers().Print("接收到申请解析源文件的消息----", res)
 				ana := strings.Split(res, "?")[1] //requestanalyze?uuid=test&rawfile=123123.zip&rawfilename=uuid/1231.zip&unityversion=12313&analyzebucket=ads&analyzeType=
 				go StorageAnalyzeParse(ana)
+				go AnalyzeServer.AnalyzeBegin(res, ana)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "successprofiler") {
@@ -62,10 +60,12 @@ func HandleConnection(conn net.Conn) {
 				Logs.Loggers().Print("接收到重新解析消息----", res)
 				req := strings.Split(res, "?")[1]
 				go AnalyzeServer.ReProfilerAna(req)
+			} else if strings.Contains(res, "markeid") {
+				Logs.Loggers().Print("接收到加入连接消息----", res)
+				req := strings.Split(res, "?")[1]
+				AnalyzeServer.AddConnectior(conn, req)
 			} else {
 				Logs.Loggers().Print("receive Data:", res)
-				message = "ok"
-				conn.Write([]byte(message))
 			}
 		}
 	}

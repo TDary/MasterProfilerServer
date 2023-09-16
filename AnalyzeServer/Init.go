@@ -34,7 +34,7 @@ func InitServer() string {
 		client.State = "out"
 		allAnalyzeClient = append(allAnalyzeClient, client)
 	}
-	InitAnalyzeClient()
+	// InitAnalyzeClient()
 	Minio.InitMinio(config.MinioServerPath, config.MinioBucket, config.MinioRawBucket)
 	Logs.Loggers().Print("初始化服务器配置成功----")
 	serUrl := config.MasterServer.Ip + ":" + config.MasterServer.Port
