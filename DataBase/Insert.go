@@ -57,9 +57,14 @@ func InsertsSub(datas []SubTable) {
 }
 
 func InsertSimpleData(datas []InsertSimple) {
+	// 将 []InsertSimple 转换为 []interface{}
+	// 创建新的 []interface{} 切片，并从 []InsertSimple 复制值
+	interfaceSlice := make([]interface{}, len(datas))
+	for i, v := range datas {
+		interfaceSlice[i] = v
+	}
 	col := mong.Database("MyDB").Collection("SimpleData")
-	indata := []interface{}{datas}
-	_, err := col.InsertMany(context.TODO(), indata)
+	_, err := col.InsertMany(context.TODO(), interfaceSlice)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	} else {
@@ -68,12 +73,17 @@ func InsertSimpleData(datas []InsertSimple) {
 }
 
 func InsertCaseFunRow(datas []CaseFunRow) {
+	// 将 []CaseFunRow 转换为 []interface{}
+	// 创建新的 []interface{} 切片，并从 []CaseFunRow 复制值
+	interfaceSlice := make([]interface{}, len(datas))
+	for i, v := range datas {
+		interfaceSlice[i] = v
+	}
 	col := mong.Database("MyDB").Collection("FunRow")
-	indata := []interface{}{datas}
-	_, err := col.InsertMany(context.TODO(), indata)
+	_, err := col.InsertMany(context.Background(), interfaceSlice)
 	if err != nil {
-		Logs.Loggers().Print(err)
+		Logs.Loggers().Print(err.Error())
 	} else {
-		Logs.Loggers().Print("SimpleData插入数据成功----")
+		Logs.Loggers().Print("FunRow插入数据成功----")
 	}
 }

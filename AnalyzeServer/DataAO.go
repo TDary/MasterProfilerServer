@@ -5,7 +5,6 @@ import "net"
 var config ConfigData
 var allAnalyzeClient []ClientState
 var stopMsg []EndData
-var isMergeStop bool
 var allconnector []ConnectPool //连接池
 
 type SuccessData struct {

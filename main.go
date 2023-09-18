@@ -15,7 +15,7 @@ func main() {
 	//初始化服务器配置;
 	ServerUrl := AnalyzeServer.InitServer()
 	//启动开始处理完成解析消息系统
-	go AnalyzeServer.AnalyzeSuccessUrl()
+	go AnalyzeServer.AnalyzeSuccessToMerge()
 	//启动socket监听
 	HttpServer.ListenAndServer(ServerUrl)
 }

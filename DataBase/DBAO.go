@@ -9,22 +9,23 @@ var erMainTData []MainTable
 var erSubTdata []SubTable
 
 type MainTable struct {
-	AppKey        string
-	UUID          string
-	GameName      string
-	CaseName      string
-	RawFiles      []string
-	UnityVersion  string
-	AnalyzeBucket string
-	AnalyzeType   string
-	StorageIp     string
-	Device        string
-	TestBeginTime string
-	TestEndTime   string
-	State         int
-	Priority      string
-	ScreenState   int
-	ScreenFiles   []string
+	AppKey          string
+	UUID            string
+	GameName        string
+	CaseName        string
+	RawFiles        []string
+	UnityVersion    string
+	AnalyzeBucket   string
+	AnalyzeType     string
+	StorageIp       string
+	Device          string
+	TestBeginTime   string
+	TestEndTime     string
+	State           int
+	Priority        string
+	ScreenState     int
+	ScreenFiles     []string
+	FrameTotalCount int
 }
 
 type SubTable struct {

@@ -43,7 +43,7 @@ func HandleConnection(conn net.Conn) {
 			} else if strings.Contains(res, "successprofiler") {
 				Logs.Loggers().Print("接收到解析成功消息----", res)
 				suce := strings.Split(res, "?")[1]
-				go StorageSucessParseMes(suce)
+				go AnalyzeServer.ParseSuccessData(suce)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "rquestclient") {

@@ -89,9 +89,7 @@ func SortRawFils(rawfiles []string) {
 //发送真正的解析请求
 func AnalyzeBegin(analze string, databaseData string) {
 	AddOneForSubTable(databaseData) //添加数据库子任务表
-	//res := GetAnalyzeData(analze)
 	//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
-	// GetIdleAnalyzeClient()
 	for _, val := range allAnalyzeClient {
 		n, err := GetConn(val.Ip, "anaclient").Write([]byte(analze))
 		if err != nil && n == 0 {
@@ -105,7 +103,7 @@ func AnalyzeBegin(analze string, databaseData string) {
 	}
 }
 
-//解析url进行结构化并创建数据库表数据
+//开始采集并解析的消息
 func AnalyzeRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
 	mtable := ReceiveMes(data)
@@ -123,10 +121,7 @@ func AnalyzeRequest(data string) {
 				} else {
 					//更新数据库主表，先排序，这里用了冒泡
 					SortRawFils(rawFiles)
-					DataBase.UpdateMainTable(mtable.AppKey, mtable.UUID, rawFiles) //更新源文件队列
-					if isMergeStop {
-						isMergeStop = false //通知开始进行状态修改并合并
-					}
+					DataBase.UpdateMainTable(mtable.AppKey, mtable.UUID, rawFiles) //更新源文件队列,+合并状态为可合并3
 					break
 				}
 			}
@@ -175,11 +170,9 @@ func AddOneForSubTable(data string) {
 		} else if strings.Contains(spldata[i], "rawfile") {
 			file := strings.Split(spldata[i], "=")
 			subt.RawFile = file[1]
-		} else if strings.Contains(spldata[i], "ip") {
-			ip := strings.Split(spldata[i], "=")
-			subt.AnalyzeIP = ip[1]
 		}
 	}
+	subt.AnalyzeIP = ""
 	subt.State = 0
 	InsertSubTableBySub(subt) //插入一条子任务
 }

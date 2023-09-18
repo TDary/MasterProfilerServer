@@ -9,39 +9,16 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+	"time"
 
 	"google.golang.org/protobuf/proto"
 )
 
 //对解析成功的消息进行检查判断是否可以进行合并操作
-func AnalyzeSuccessUrl() {
-	//也是进行轮询查找,一次查找较多的数据
-	var getanalyzeData string
-	var waitModifyState []SuccessData
+func AnalyzeSuccessToMerge() {
 	for {
-		if !isMergeStop {
-			if len(waitModifyState) == 50 {
-				//达到了允许存储的上限,直接进行修改状态值
-				var allip []string
-				ModifySubState(waitModifyState, allip) //修改状态值
-				waitModifyState = nil                  //重置上限值
-				//开始判断是否有案例可以进行合并入库操作
-				CheckCaseToMerge()
-			}
-			getanalyzeData = GetSuccessMes("./ServerQue/ParseQueSuccessQue")
-			if getanalyzeData != "" {
-				waitModifyState = ParseSuccessData(getanalyzeData, waitModifyState)
-			} else {
-				Logs.Loggers().Print("成功解析消息队列已空，进入检查状态")
-				//开始修改子案例状态,同时释放解析进程
-				isMergeStop = true
-				var allip []string
-				ModifySubState(waitModifyState, allip) //修改状态值
-				waitModifyState = nil                  //重置上限值
-				//开始判断是否有案例可以进行合并入库操作
-				CheckCaseToMerge()
-			}
-		}
+		time.Sleep(30 * time.Second) //每隔30秒检查一次
+		CheckCaseToMerge()
 	}
 }
 
@@ -147,7 +124,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 	}
 	//入库
 	DataBase.InsertSimpleData(insertDatas)
-	DataBase.ModifyMainState(maintable.AppKey, maintable.UUID, 1)
+	DataBase.ModifyMainState(maintable.UUID, 1, len(insertDatas[0].Valus))
 }
 
 //合并funprofiler数据
@@ -231,12 +208,14 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 		}
 	}
 	//转换数据结构
+	var totalFrame int
 	for _, vals := range allFunRow.Allvalues {
 		var caseFunRow DataBase.CaseFunRow
 		frame := 1
 		caseFunRow.UUID = maintable.UUID
 		caseFunRow.Name = vals.Name
 		if caseFunRow.Name == "Main Thread" { //暂时不要放入这个数据，以后要的话再说
+			totalFrame = len(vals.Frames)
 			continue
 		}
 		for _, va2 := range vals.Frames {
@@ -255,7 +234,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	}
 	//入库
 	DataBase.InsertCaseFunRow(insertCaseFunRow)
-	DataBase.ModifyMainState(maintable.AppKey, maintable.UUID, 1)
+	DataBase.ModifyMainState(maintable.UUID, 1, totalFrame)
 }
 
 //开始合并且入库操作
@@ -280,13 +259,12 @@ func MergeBegin(maintable DataBase.MainTable) {
 //检查案例状态是否有可以进行合并的
 func CheckCaseToMerge() {
 	var waitCase []DataBase.MainTable
-	waitCase = DataBase.FindMainTable(0)
-	if waitCase != nil {
+	waitCase = DataBase.FindMainTable(3)
+	if len(waitCase) > 0 {
 		for _, val := range waitCase {
 			currentCase := CheckSub(val.UUID)
 			if currentCase {
 				//当前案例可以进行合并操作了
-				DataBase.ModifyMainState(val.AppKey, val.UUID, 3)
 				Logs.Loggers().Print("开始合并案例,UUID:" + val.UUID)
 				go MergeBegin(val)
 			} else {
@@ -294,7 +272,7 @@ func CheckCaseToMerge() {
 			}
 		}
 	} else {
-		Logs.Loggers().Print("无待合并的案例----")
+		// Logs.Loggers().Print("无待合并的案例----")
 	}
 	waitCase = nil //上面流程完毕清除一次
 }
@@ -315,16 +293,8 @@ func CheckSub(uuid string) bool {
 	}
 }
 
-//修改子案例状态
-func ModifySubState(wdata []SuccessData, allip []string) {
-	for _, val := range wdata {
-		allip = append(allip, val.IP)
-		DataBase.UpdateStates(val.RawFile, val.UUID, 1, val.IP)
-	}
-}
-
-//处理解析成功消息
-func ParseSuccessData(data string, wdata []SuccessData) []SuccessData {
+//处理解析成功消息状态
+func ParseSuccessData(data string) {
 	var addData SuccessData
 	splidata := strings.Split(data, "&")
 	for i := 0; i < len(splidata); i++ {
@@ -339,6 +309,5 @@ func ParseSuccessData(data string, wdata []SuccessData) []SuccessData {
 			addData.UUID = current[1]
 		}
 	}
-	wdata = append(wdata, addData)
-	return wdata
+	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
 }

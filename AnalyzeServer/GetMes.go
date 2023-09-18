@@ -3,15 +3,8 @@ package AnalyzeServer
 import (
 	"MasterServer/DataBase"
 	"MasterServer/Logs"
-	"MasterServer/RabbitMqServer"
 	"strings"
 )
-
-//从队列中拿出数据
-func GetSuccessMes(data string) string {
-	res := RabbitMqServer.GetData(data)
-	return res
-}
 
 func GetAnalyzeData(data string) AnalyzeData {
 	var res AnalyzeData
@@ -94,6 +87,7 @@ func ReceiveMes(mes string) DataBase.MainTable {
 	mtable.State = 0
 	mtable.ScreenFiles = nil
 	mtable.ScreenState = 0
+	mtable.FrameTotalCount = 0
 	if len(mtable.RawFiles) == 0 {
 		mtable.RawFiles = nil
 	}
