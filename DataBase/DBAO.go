@@ -16,13 +16,12 @@ type MainTable struct {
 	RawFiles        []string
 	UnityVersion    string
 	AnalyzeBucket   string
+	CollectorIp     string
 	AnalyzeType     string
-	StorageIp       string
 	Device          string
 	TestBeginTime   string
 	TestEndTime     string
 	State           int
-	Priority        string
 	ScreenState     int
 	ScreenFiles     []string
 	FrameTotalCount int

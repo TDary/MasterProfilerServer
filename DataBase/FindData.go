@@ -7,6 +7,25 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+//根据UUID查询主表
+func FindMainTableByUUID(UUID string) []MainTable {
+	filter := bson.D{{Key: "uuid", Value: UUID}}
+	col := mong.Database("MyDB").Collection("MainTable")
+	res, err := col.Find(context.TODO(), filter)
+	if err != nil {
+		Logs.Loggers().Println("查询失败----", err.Error())
+		return nil
+	}
+	var MainT []MainTable
+	err = res.All(context.TODO(), &MainT)
+	if err != nil {
+		Logs.Loggers().Print("查询失败----", err.Error())
+		return nil
+	}
+	return MainT
+}
+
+//根据状态值查询主表
 func FindMainTable(state int) []MainTable {
 	filter := bson.D{{Key: "state", Value: state}}
 	col := mong.Database("MyDB").Collection("MainTable")
@@ -23,6 +42,7 @@ func FindMainTable(state int) []MainTable {
 	return MainT
 }
 
+//根据UUID查询子表
 func FindSubTableData(uuid string) []SubTable {
 	filter := bson.D{{Key: "uuid", Value: uuid}}
 	col := mong.Database("MyDB").Collection("SubTable")

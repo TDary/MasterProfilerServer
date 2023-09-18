@@ -36,6 +36,7 @@ func GetAnalyzeData(data string) AnalyzeData {
 //接受开始采集消息
 func ReceiveMes(mes string) DataBase.MainTable {
 	var mtable DataBase.MainTable
+	var collectip string
 	str1 := strings.Split(mes, "&")
 	for i := 0; i < len(str1); i++ {
 		if strings.Contains(str1[i], "gameid") { //解析gameid
@@ -65,21 +66,19 @@ func ReceiveMes(mes string) DataBase.MainTable {
 		} else if strings.Contains(str1[i], "anatype") { //解析类型
 			na := strings.Split(str1[i], "=")
 			mtable.AnalyzeType = na[1]
-		} else if strings.Contains(str1[i], "storageIp") { //解析StorageIp
-			na := strings.Split(str1[i], "=")
-			mtable.StorageIp = na[1]
 		} else if strings.Contains(str1[i], "device") { //解析Device
 			na := strings.Split(str1[i], "=")
 			mtable.Device = na[1]
-		} else if strings.Contains(str1[i], "beginTime") { //解析TestBeginTime
+		} else if strings.Contains(str1[i], "beginTime") { //采集开始TestBeginTime时间
 			na := strings.Split(str1[i], "=")
 			mtable.TestBeginTime = na[1]
-		} else if strings.Contains(str1[i], "endTime") { //解析TestEndTime
+		} else if strings.Contains(str1[i], "endTime") { //采集解析结束TestEndTime
 			na := strings.Split(str1[i], "=")
 			mtable.TestEndTime = na[1]
-		} else if strings.Contains(str1[i], "priority") { //解析优先级priority
+		} else if strings.Contains(str1[i], "collcetorip") { //采集器IP
 			na := strings.Split(str1[i], "=")
-			mtable.Priority = na[1]
+			mtable.CollectorIp = na[1]
+			collectip = na[1]
 		} else {
 			Logs.Loggers().Print("不存在对额外参数的解析:" + str1[i])
 		}
@@ -91,7 +90,12 @@ func ReceiveMes(mes string) DataBase.MainTable {
 	if len(mtable.RawFiles) == 0 {
 		mtable.RawFiles = nil
 	}
-	DataBase.InsertMain(mtable) //todo:判断是否有已经存在的Uuid，有的话不插入
+	res := DataBase.FindMainTableByUUID(mtable.UUID)
+	if res != nil {
+		Logs.Loggers().Printf("数据库中已存在UUID:%s，不能重复插入", mtable.UUID)
+		return DataBase.MainTable{CollectorIp: collectip}
+	}
+	DataBase.InsertMain(mtable)
 	GetSubData(mtable)
 	return mtable
 }

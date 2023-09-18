@@ -56,6 +56,9 @@ func HandleConnection(conn net.Conn) {
 				go AnalyzeServer.StopAnalyzeRequest(stopMsg)
 				message = "ok"
 				conn.Write([]byte(message))
+			} else if strings.Contains(res, "cancelanalyze") { //todo:中途取消采集
+				message = "ok"
+				conn.Write([]byte(message))
 			} else if strings.Contains(res, "ReAnalyze") {
 				Logs.Loggers().Print("接收到重新解析消息----", res)
 				req := strings.Split(res, "?")[1]

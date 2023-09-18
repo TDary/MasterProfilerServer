@@ -32,3 +32,12 @@ func GetConn(ip string, machine string) net.Conn {
 	}
 	return nil
 }
+
+//断开连接
+func CloseConnect(ip string, machine string) {
+	for _, val := range allconnector {
+		if val.Ip == ip && machine == val.Marchine {
+			val.Conn.Close()
+		}
+	}
+}

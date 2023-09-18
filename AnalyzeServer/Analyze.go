@@ -86,6 +86,15 @@ func SortRawFils(rawfiles []string) {
 	}
 }
 
+//发送开始采集失败的消息
+func SendFailToGather(uuid string, ip string) {
+	msg := "开始采集失败，当前存在重复的UUID" + uuid
+	n, err := GetConn(ip, "collector").Write([]byte(msg))
+	if err != nil && n == 0 {
+		Logs.Loggers().Print("发送消息失败----", err.Error())
+	}
+}
+
 //发送真正的解析请求
 func AnalyzeBegin(analze string, databaseData string) {
 	AddOneForSubTable(databaseData) //添加数据库子任务表
@@ -97,7 +106,7 @@ func AnalyzeBegin(analze string, databaseData string) {
 			break
 		} else {
 			//
-			Logs.Loggers().Print("发送长度：", n)
+			// Logs.Loggers().Print("发送长度：", n)
 			break
 		}
 	}
@@ -107,6 +116,14 @@ func AnalyzeBegin(analze string, databaseData string) {
 func AnalyzeRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
 	mtable := ReceiveMes(data)
+	if mtable.UUID == "" {
+		Logs.Loggers().Print("由于插入数据库表数据失败，退出当前执行.")
+		//发送采集失败消息进行停止
+		SendFailToGather(mtable.UUID, mtable.CollectorIp)
+		//断开连接
+		CloseConnect(mtable.CollectorIp, "collector")
+		return
+	}
 	var rawFiles []string
 	quePath := "./ServerQue/" + mtable.UUID + "_AnalyzeQue"
 	for {
