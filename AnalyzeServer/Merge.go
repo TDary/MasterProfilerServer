@@ -118,21 +118,23 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 				frame += 1
 			}
 		} else {
+			item.UUID = maintable.UUID
 			item.Valus = val.Values
 		}
 		insertDatas = append(insertDatas, item)
 	}
 	//入库
 	DataBase.InsertSimpleData(insertDatas)
-	DataBase.ModifyMainState(maintable.UUID, 1, len(insertDatas[0].Valus))
+	DataBase.ModifyMain(maintable.UUID, 1, len(insertDatas[0].Valus))
 }
 
 //合并funprofiler数据
 func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	var allFunRow Data.AllCaseFunRow
 	var insertCaseFunRow []DataBase.CaseFunRow
+	var frame int32
+	frame = 1
 	for _, val := range maintable.RawFiles {
-		//objectName = val
 		rawPath := dataPath + "/" + val
 		var isExit, _ = ioutil.ReadFile(rawPath)
 		currentFunRowData := &Data.AllCaseFunRow{}
@@ -162,10 +164,16 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 				for key2, val2 := range allFunRow.Allvalues {
 					if val2.Name == val.Name {
 						ishasdata = true
+						for ks, fs := range val.Frames {
+							val.Frames[ks].Frame = frame + fs.Frame - 2
+						}
 						allFunRow.Allvalues[key2].Frames = append(allFunRow.Allvalues[key2].Frames, val.Frames...)
 					}
 				}
 				if !ishasdata {
+					for key, fs := range val.Frames {
+						val.Frames[key].Frame = frame + fs.Frame - 2
+					}
 					allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 				}
 			}
@@ -197,30 +205,39 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 					for key2, val2 := range allFunRow.Allvalues {
 						if val2.Name == val.Name {
 							ishasdata = true
+							for ks, fs := range val.Frames {
+								val.Frames[ks].Frame = frame + fs.Frame - 2
+							}
 							allFunRow.Allvalues[key2].Frames = append(allFunRow.Allvalues[key2].Frames, val.Frames...)
 						}
 					}
 					if !ishasdata {
+						for key, fs := range val.Frames {
+							val.Frames[key].Frame = frame + fs.Frame - 2
+						}
 						allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 					}
 				}
 			}
+		}
+		if len(currentFunRowData.Allvalues[0].Frames) != 0 {
+			count := len(currentFunRowData.Allvalues[0].Frames)
+			frame += int32(count)
 		}
 	}
 	//转换数据结构
 	var totalFrame int
 	for _, vals := range allFunRow.Allvalues {
 		var caseFunRow DataBase.CaseFunRow
-		frame := 1
 		caseFunRow.UUID = maintable.UUID
 		caseFunRow.Name = vals.Name
-		if caseFunRow.Name == "Main Thread" { //暂时不要放入这个数据，以后要的话再说
+		if caseFunRow.Name == "Main Thread" { //暂时不放入这个数据，以后要的话再说
 			totalFrame = len(vals.Frames)
 			continue
 		}
 		for _, va2 := range vals.Frames {
 			var funrowInfo DataBase.FunRowInfo
-			funrowInfo.Frame = int32(frame)
+			funrowInfo.Frame = va2.Frame
 			funrowInfo.Total = va2.Total
 			funrowInfo.Self = va2.Self
 			funrowInfo.Calls = va2.Calls
@@ -228,13 +245,12 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 			funrowInfo.Timems = va2.Timems
 			funrowInfo.Selfms = va2.Selfms
 			caseFunRow.Frames = append(caseFunRow.Frames, funrowInfo)
-			frame += 1
 		}
 		insertCaseFunRow = append(insertCaseFunRow, caseFunRow)
 	}
 	//入库
 	DataBase.InsertCaseFunRow(insertCaseFunRow)
-	DataBase.ModifyMainState(maintable.UUID, 1, totalFrame)
+	DataBase.ModifyMain(maintable.UUID, 1, totalFrame)
 }
 
 //开始合并且入库操作
@@ -259,12 +275,13 @@ func MergeBegin(maintable DataBase.MainTable) {
 //检查案例状态是否有可以进行合并的
 func CheckCaseToMerge() {
 	var waitCase []DataBase.MainTable
-	waitCase = DataBase.FindMainTable(3)
+	waitCase = DataBase.FindMainTable(0)
 	if len(waitCase) > 0 {
 		for _, val := range waitCase {
 			currentCase := CheckSub(val.UUID)
 			if currentCase {
 				//当前案例可以进行合并操作了
+				DataBase.ModifyMainState(val.UUID, 3)
 				Logs.Loggers().Print("开始合并案例,UUID:" + val.UUID)
 				go MergeBegin(val)
 			} else {

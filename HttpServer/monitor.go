@@ -46,6 +46,9 @@ func HandleConnection(conn net.Conn) {
 				go AnalyzeServer.ParseSuccessData(suce)
 				message = "ok"
 				conn.Write([]byte(message))
+			} else if strings.Contains(res, "successprofiler") { //todo:解析失败处理
+				message = "ok"
+				conn.Write([]byte(message))
 			} else if strings.Contains(res, "rquestclient") {
 				Logs.Loggers().Print("接收到解析器请求消息----", res)
 				message = "ok"

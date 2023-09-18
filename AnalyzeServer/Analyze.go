@@ -189,6 +189,9 @@ func AddOneForSubTable(data string) {
 			subt.RawFile = file[1]
 		}
 	}
+	if strings.Contains(subt.RawFile, ".zip") {
+		subt.RawFile = strings.Split(subt.RawFile, ".")[0] + ".raw"
+	}
 	subt.AnalyzeIP = ""
 	subt.State = 0
 	InsertSubTableBySub(subt) //插入一条子任务

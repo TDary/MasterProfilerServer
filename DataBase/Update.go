@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-//更新主表状态值
-func ModifyMainState(uuid string, state int, framecount int) {
+//更新主表
+func ModifyMain(uuid string, state int, framecount int) {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据
 	up := bson.M{"$set": bson.M{"state": state, "frametotalcount": framecount}}
@@ -20,6 +20,18 @@ func ModifyMainState(uuid string, state int, framecount int) {
 }
 
 //更新主表状态值
+func ModifyMainState(uuid string, state int) {
+	col := mong.Database("MyDB").Collection("MainTable")
+	//更改数据
+	up := bson.M{"$set": bson.M{"state": state}}
+	//更改元数据
+	_, err := col.UpdateMany(context.TODO(), bson.M{"uuid": uuid}, up)
+	if err != nil {
+		Logs.Loggers().Print(err)
+	}
+}
+
+//更新主表
 func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 	col := mong.Database("MyDB").Collection("MainTable")
 	//更改数据
