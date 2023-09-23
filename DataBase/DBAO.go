@@ -35,9 +35,9 @@ type SubTable struct {
 }
 
 type InsertSimple struct {
-	UUID  string
-	Name  string
-	Valus []float32
+	UUID   string
+	Name   string
+	Values []float32
 }
 
 type CaseFunRow struct {

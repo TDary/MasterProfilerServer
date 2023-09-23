@@ -109,23 +109,23 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 		var item DataBase.InsertSimple
 		item.Name = val.Field
 		if item.Name == "frame" {
-			item.Valus = val.Values
+			item.Values = val.Values
 			item.UUID = maintable.UUID
 			var frame float32
 			frame = 1
-			for key, _ := range item.Valus {
-				item.Valus[key] = frame //赋于正确的帧数
+			for key, _ := range item.Values {
+				item.Values[key] = frame //赋于正确的帧数
 				frame += 1
 			}
 		} else {
 			item.UUID = maintable.UUID
-			item.Valus = val.Values
+			item.Values = val.Values
 		}
 		insertDatas = append(insertDatas, item)
 	}
 	//入库
 	DataBase.InsertSimpleData(insertDatas)
-	DataBase.ModifyMain(maintable.UUID, 1, len(insertDatas[0].Valus))
+	DataBase.ModifyMain(maintable.UUID, 1, len(insertDatas[0].Values))
 }
 
 //合并funprofiler数据
