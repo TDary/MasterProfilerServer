@@ -72,10 +72,9 @@ func SendRobotMsg(url string, msg string) {
 	var sendArgs strings.Builder
 	sendArgs.WriteString(`{"msg_type":"post","content":{"post":{"zh_cn":{"content":[[{"tag":"text","text":"`)
 	sendArgs.WriteString(msg)
-	sendArgs.WriteString(`"},{"tag":"a","text":"test"`)
-	sendArgs.WriteString(`}]]}}}}`)
+	sendArgs.WriteString(`"}]]}}}}`)
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(msg)))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(sendArgs.String())))
 	if err != nil {
 		// handle error
 		Logs.Loggers().Print("Failed to send meesage to robot----", err.Error())

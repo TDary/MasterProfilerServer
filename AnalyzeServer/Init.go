@@ -34,25 +34,9 @@ func InitServer() string {
 		client.State = "out"
 		allAnalyzeClient = append(allAnalyzeClient, client)
 	}
-	// InitAnalyzeClient()
-	Minio.InitMinio(config.MinioServerPath, config.MinioBucket, config.MinioRawBucket)
-	Logs.Loggers().Print("初始化服务器配置成功----")
-	serUrl := config.MasterServer.Ip + ":" + config.MasterServer.Port
-	return serUrl
-}
 
-//初始化解析器，先ping一下
-func InitAnalyzeClient() {
-	for _, val := range config.Client {
-		address := val.Ip + ":" + val.Port
-		rev := RequestClientState(address)
-		if rev.State != "" {
-			for key, val2 := range allAnalyzeClient {
-				if val2.IpAddress == address {
-					allAnalyzeClient[key].State = rev.State
-					break
-				}
-			}
-		}
-	}
+	Minio.InitMinio(config.MinioServerPath, config.MinioBucket, config.MinioRawBucket)
+	serUrl := config.MasterServer.Ip + ":" + config.MasterServer.Port
+	Logs.Loggers().Print("初始化服务器配置成功----")
+	return serUrl
 }

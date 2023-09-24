@@ -38,7 +38,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 				Logs.Loggers().Print("解压分析文件失败----", rawPath)
 				return
 			}
-			simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".csv"
+			simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw.csv"
 			bytedata, err := ioutil.ReadFile(simpleDataPath)
 			if err != nil {
 				//打开失败
@@ -287,8 +287,7 @@ func MergeBegin(maintable DataBase.MainTable) {
 
 //检查案例状态是否有可以进行合并的
 func CheckCaseToMerge() {
-	var waitCase []DataBase.MainTable
-	waitCase = DataBase.FindMainTable(0)
+	waitCase := DataBase.FindMainTable(0)
 	if len(waitCase) > 0 {
 		for _, val := range waitCase {
 			currentCase := CheckSub(val.UUID)
@@ -301,10 +300,7 @@ func CheckCaseToMerge() {
 				continue
 			}
 		}
-	} else {
-		// Logs.Loggers().Print("无待合并的案例----")
 	}
-	waitCase = nil //上面流程完毕清除一次
 }
 
 //检查子表

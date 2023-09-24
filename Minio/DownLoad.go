@@ -13,7 +13,7 @@ func DownLoadFile(objectName string, filePath string, contentType string) bool {
 	// 检查存储桶是否已经存在。
 	exists, err := minioClient.BucketExists(ctx, BucketName)
 	if err == nil && exists {
-		Logs.Loggers().Printf("当前存储桶 %s存在----\n", BucketName)
+		// Logs.Loggers().Printf("当前存储桶 %s存在----\n", BucketName)
 	} else {
 		Logs.Loggers().Printf("当前存储桶 %s不存在----\n", BucketName)
 		Logs.Loggers().Print(err)
