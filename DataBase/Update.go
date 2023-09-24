@@ -54,10 +54,10 @@ func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
 }
 
 //将失败的任务进行重新解析
-func FindAndModify(uuid string, rawfile string) {
+func FindAndModify(uuid string, rawfile string, state int) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.D{{Key: "$set", Value: bson.D{{Key: "state", Value: 0}}}}
-	_, err := col.UpdateOne(context.TODO(), bson.D{{Key: "uuid", Value: uuid}, {Key: "rawfile", Value: rawfile}}, update)
+	update := bson.M{"$set": bson.M{"state": state}}
+	_, err := col.UpdateOne(context.TODO(), bson.M{"uuid": uuid, "rawfile": rawfile}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
 	}

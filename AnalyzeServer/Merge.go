@@ -341,3 +341,22 @@ func ParseSuccessData(data string) {
 	}
 	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
 }
+
+//处理解析失败消息状态
+func ParseFailedData(data string) {
+	var addData SuccessData
+	splidata := strings.Split(data, "&")
+	for i := 0; i < len(splidata); i++ {
+		if strings.Contains(splidata[i], "ip") {
+			current := strings.Split(splidata[i], "=")
+			addData.IP = current[1]
+		} else if strings.Contains(splidata[i], "rawfile") {
+			current := strings.Split(splidata[i], "=")
+			addData.RawFile = current[1]
+		} else if strings.Contains(splidata[i], "uuid") {
+			current := strings.Split(splidata[i], "=")
+			addData.UUID = current[1]
+		}
+	}
+	DataBase.UpdateStates(addData.RawFile, addData.UUID, -1, addData.IP) //更新状态值
+}

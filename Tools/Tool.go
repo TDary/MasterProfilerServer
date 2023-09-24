@@ -1,6 +1,7 @@
 package Tools
 
 import (
+	"MasterServer/DataBase"
 	"MasterServer/Logs"
 	"archive/zip"
 	"bytes"
@@ -11,13 +12,16 @@ import (
 	"strings"
 )
 
-func GetKey(k string, m map[int]string) bool {
-	for i := 0; i < len(m); i++ {
-		if m[i] == k {
-			return true
+//清除数据库无用数据
+func ClearDataBase() {
+	waitCase := DataBase.FindMainTable(1)
+	if len(waitCase) > 0 {
+		for _, val := range waitCase {
+			DataBase.DelSubData(val.UUID)
 		}
+	} else {
+		Logs.Loggers().Print("无待待删除的子任务数据----")
 	}
-	return false
 }
 
 //解压zip文件
@@ -65,6 +69,12 @@ func ExtractZip(zipFile string, targetFolder string) error {
 
 //发送机器人提醒消息
 func SendRobotMsg(url string, msg string) {
+	var sendArgs strings.Builder
+	sendArgs.WriteString(`{"msg_type":"post","content":{"post":{"zh_cn":{"content":[[{"tag":"text","text":"`)
+	sendArgs.WriteString(msg)
+	sendArgs.WriteString(`"},{"tag":"a","text":"test"`)
+	sendArgs.WriteString(`}]]}}}}`)
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer([]byte(msg)))
 	if err != nil {
 		// handle error

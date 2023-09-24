@@ -173,7 +173,19 @@ func ReProfilerAna(data string) {
 			rawfile = file[1]
 		}
 	}
-	DataBase.FindAndModify(uuid, rawfile)
+	DataBase.FindAndModify(uuid, rawfile, 0) //修改任务状态
+	//发送解析请求
+	for _, val := range allAnalyzeClient {
+		n, err := GetConn(val.Ip, "anaclient").Write([]byte(data))
+		if err != nil && n == 0 {
+			Logs.Loggers().Print("发送解析消息失败----", err.Error())
+			break
+		} else {
+			//
+			// Logs.Loggers().Print("发送长度：", n)
+			break
+		}
+	}
 }
 
 //添加一项子表任务

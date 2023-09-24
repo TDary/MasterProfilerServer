@@ -46,7 +46,10 @@ func HandleConnection(conn net.Conn) {
 				go AnalyzeServer.ParseSuccessData(suce)
 				message = "ok"
 				conn.Write([]byte(message))
-			} else if strings.Contains(res, "successprofiler") { //todo:解析失败处理
+			} else if strings.Contains(res, "failledprofiler") {
+				Logs.Loggers().Print("接收到解析失败消息----", res)
+				faild := strings.Split(res, "?")[1]
+				go AnalyzeServer.ParseFailedData(faild)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "rquestclient") {
@@ -63,9 +66,10 @@ func HandleConnection(conn net.Conn) {
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "ReAnalyze") {
-				Logs.Loggers().Print("接收到重新解析消息----", res)
-				req := strings.Split(res, "?")[1]
-				go AnalyzeServer.ReProfilerAna(req)
+				Logs.Loggers().Print("接收到重新解析消息----", res) //requestanalyze?uuid=test&rawfile=123123.zip&rawfilename=uuid/1231.zip&unityversion=12313&analyzebucket=ads&analyzeType=
+				go AnalyzeServer.ReProfilerAna(res)
+				message = "ok"
+				conn.Write([]byte(message))
 			} else if strings.Contains(res, "markeid") {
 				Logs.Loggers().Print("接收到加入连接消息----", res)
 				req := strings.Split(res, "?")[1]
