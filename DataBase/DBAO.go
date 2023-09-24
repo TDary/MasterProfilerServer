@@ -41,9 +41,10 @@ type InsertSimple struct {
 }
 
 type CaseFunRow struct {
-	UUID   string
-	Name   string
-	Frames []FunRowInfo
+	UUID         string
+	Name         string
+	AvgValidTime int32
+	Frames       []FunRowInfo
 }
 
 type CaseFunNamePath struct {

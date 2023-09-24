@@ -299,6 +299,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 			totalFrame = len(vals.Frames)
 			continue
 		}
+		var totalTime int32
 		for _, va2 := range vals.Frames {
 			var funrowInfo DataBase.FunRowInfo
 			funrowInfo.Frame = va2.Frame
@@ -308,8 +309,10 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 			funrowInfo.Gcalloc = va2.Gcalloc
 			funrowInfo.Timems = va2.Timems
 			funrowInfo.Selfms = va2.Selfms
+			totalTime += va2.Timems
 			caseFunRow.Frames = append(caseFunRow.Frames, funrowInfo)
 		}
+		caseFunRow.AvgValidTime = totalTime / int32(len(vals.Frames))
 		insertCaseFunRow = append(insertCaseFunRow, caseFunRow)
 	}
 	insertCaseFunPath.UUID = maintable.UUID
