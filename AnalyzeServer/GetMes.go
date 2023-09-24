@@ -19,13 +19,13 @@ func GetAnalyzeData(data string) AnalyzeData {
 		} else if strings.Contains(str1[i], "rawfilename") { //解析gamename
 			na := strings.Split(str1[i], "=")
 			res.RawFileName = na[1]
-		} else if strings.Contains(str1[i], "unityVersion") { //解析unityVersion
+		} else if strings.Contains(str1[i], "unityversion") { //解析unityVersion
 			na := strings.Split(str1[i], "=")
 			res.UnityVersion = na[1]
 		} else if strings.Contains(str1[i], "analyzebucket") { //解析AnalyzeBucket
 			na := strings.Split(str1[i], "=")
 			res.Bucket = na[1]
-		} else if strings.Contains(str1[i], "analyzeType") { //解析类型
+		} else if strings.Contains(str1[i], "analyzetype") { //解析类型
 			na := strings.Split(str1[i], "=")
 			res.AnalyzeType = na[1]
 		}
@@ -63,7 +63,7 @@ func ReceiveMes(mes string) DataBase.MainTable {
 		} else if strings.Contains(str1[i], "bucket") { //解析AnalyzeBucket
 			na := strings.Split(str1[i], "=")
 			mtable.AnalyzeBucket = na[1]
-		} else if strings.Contains(str1[i], "anatype") { //解析类型
+		} else if strings.Contains(str1[i], "analyzeType") { //解析类型
 			na := strings.Split(str1[i], "=")
 			mtable.AnalyzeType = na[1]
 		} else if strings.Contains(str1[i], "device") { //解析Device
@@ -75,7 +75,7 @@ func ReceiveMes(mes string) DataBase.MainTable {
 		} else if strings.Contains(str1[i], "endTime") { //采集解析结束TestEndTime
 			na := strings.Split(str1[i], "=")
 			mtable.TestEndTime = na[1]
-		} else if strings.Contains(str1[i], "collcetorip") { //采集器IP
+		} else if strings.Contains(str1[i], "collcetorIp") { //采集器IP
 			na := strings.Split(str1[i], "=")
 			mtable.CollectorIp = na[1]
 			collectip = na[1]

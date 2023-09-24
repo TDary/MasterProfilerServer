@@ -32,6 +32,7 @@ type ConfigData struct {
 	MinioBucket     string
 	MinioRawBucket  string
 	MergePath       string
+	RobotUrl        string
 }
 
 type ClientState struct {

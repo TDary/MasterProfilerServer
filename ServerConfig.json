@@ -15,5 +15,6 @@
     "MinioServerPath":"10.11.144.31:8001",
     "MinioBucket":"analyzedata",
     "MinioRawBucket":"rawdata",
-    "MergePath":"E:/MergeData"
+    "MergePath":"E:/MergeData",
+    "RobotUrl" : "https://open.feishu.cn/open-apis/bot/v2/hook/a26d909f-fbec-45e5-8b58-c920f1a35ce1"
 }

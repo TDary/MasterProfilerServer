@@ -32,17 +32,17 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 		currentSimpleData := &Data.Simples{}
 		if isExit != nil {
 			//存在分析文件，可直接反序列化,解压后再反序列化
-			raw, err := Tools.ExtractZip(rawPath, dataPath)
+			err := Tools.ExtractZip(rawPath, dataPath)
 			if err != nil {
 				//解压失败
 				Logs.Loggers().Print("解压分析文件失败----", rawPath)
 				return
 			}
-			rawDataPath := dataPath + "/" + raw
-			bytedata, err := ioutil.ReadFile(rawDataPath)
+			simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".csv"
+			bytedata, err := ioutil.ReadFile(simpleDataPath)
 			if err != nil {
 				//打开失败
-				Logs.Loggers().Print("打开分析文件失败----", rawPath)
+				Logs.Loggers().Print("打开分析文件失败----", simpleDataPath)
 				return
 			}
 			err = proto.Unmarshal(bytedata, currentSimpleData)
@@ -67,14 +67,14 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 			objectName := maintable.UUID + "/" + val
 			isdownloadSuccess := Minio.DownLoadFile(objectName, rawPath, "application/zip")
 			if isdownloadSuccess {
-				raw, err := Tools.ExtractZip(rawPath, dataPath)
+				err := Tools.ExtractZip(rawPath, dataPath)
 				if err != nil {
 					//解压失败
 					Logs.Loggers().Print("解压分析文件失败----", rawPath)
 					return
 				}
-				rawDataPath := dataPath + "/" + raw
-				bytedata, err := ioutil.ReadFile(rawDataPath)
+				simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw.csv"
+				bytedata, err := ioutil.ReadFile(simpleDataPath)
 				if err != nil {
 					//打开失败
 					Logs.Loggers().Print("打开分析文件失败----", rawPath)
@@ -126,6 +126,8 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 	//入库
 	DataBase.InsertSimpleData(insertDatas)
 	DataBase.ModifyMain(maintable.UUID, 1, len(insertDatas[0].Values))
+	//成功合并上报
+	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
 //合并funprofiler数据
@@ -136,22 +138,22 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	frame = 1
 	for _, val := range maintable.RawFiles {
 		rawPath := dataPath + "/" + val
-		var isExit, _ = ioutil.ReadFile(rawPath)
 		currentFunRowData := &Data.AllCaseFunRow{}
+		var isExit, _ = ioutil.ReadFile(rawPath)
 		if isExit != nil {
-			//存在分析文件，可直接反序列化
 			//存在分析文件，可直接反序列化,解压后再反序列化
-			raw, err := Tools.ExtractZip(rawPath, dataPath)
+			err := Tools.ExtractZip(rawPath, dataPath)
 			if err != nil {
 				//解压失败
 				Logs.Loggers().Print("解压分析文件失败----", rawPath)
 				return
 			}
-			rawDataPath := dataPath + "/" + raw
-			bytedata, err := ioutil.ReadFile(rawDataPath)
+			rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
+			//合并FunRow
+			bytedata, err := ioutil.ReadFile(rowDataPath)
 			if err != nil {
 				//打开失败
-				Logs.Loggers().Print("打开分析文件失败----", rawPath)
+				Logs.Loggers().Print("打开分析文件失败----", rowDataPath)
 				return
 			}
 			err = proto.Unmarshal(bytedata, currentFunRowData)
@@ -159,20 +161,24 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 				Logs.Loggers().Print("反序列化失败----", err.Error())
 				return
 			}
+			var subCount int32
 			for _, val := range currentFunRowData.Allvalues {
+				if val.Name == "Main Thread" {
+					subCount = 300 - int32(len(val.Frames)) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
+				}
 				ishasdata := false
 				for key2, val2 := range allFunRow.Allvalues {
 					if val2.Name == val.Name {
 						ishasdata = true
 						for ks, fs := range val.Frames {
-							val.Frames[ks].Frame = frame + fs.Frame - 2
+							val.Frames[ks].Frame = frame + fs.Frame - subCount
 						}
 						allFunRow.Allvalues[key2].Frames = append(allFunRow.Allvalues[key2].Frames, val.Frames...)
 					}
 				}
 				if !ishasdata {
 					for key, fs := range val.Frames {
-						val.Frames[key].Frame = frame + fs.Frame - 2
+						val.Frames[key].Frame = frame + fs.Frame - subCount
 					}
 					allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 				}
@@ -182,17 +188,18 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 			objectName := maintable.UUID + "/" + val
 			isdownloadSuccess := Minio.DownLoadFile(objectName, rawPath, "application/zip")
 			if isdownloadSuccess {
-				raw, err := Tools.ExtractZip(rawPath, dataPath)
+				err := Tools.ExtractZip(rawPath, dataPath)
 				if err != nil {
 					//解压失败
 					Logs.Loggers().Print("解压分析文件失败----", rawPath)
 					return
 				}
-				rawDataPath := dataPath + "/" + raw
-				bytedata, err := ioutil.ReadFile(rawDataPath)
+				rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
+				//合并FunRow
+				bytedata, err := ioutil.ReadFile(rowDataPath)
 				if err != nil {
 					//打开失败
-					Logs.Loggers().Print("打开分析文件失败----", rawPath)
+					Logs.Loggers().Print("打开分析文件失败----", rowDataPath)
 					return
 				}
 				err = proto.Unmarshal(bytedata, currentFunRowData)
@@ -200,20 +207,24 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 					Logs.Loggers().Print("反序列化失败----", err.Error())
 					return
 				}
+				var subCount int32
 				for _, val := range currentFunRowData.Allvalues {
+					if val.Name == "Main Thread" {
+						subCount = 300 - int32(len(val.Frames)) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
+					}
 					ishasdata := false
 					for key2, val2 := range allFunRow.Allvalues {
 						if val2.Name == val.Name {
 							ishasdata = true
 							for ks, fs := range val.Frames {
-								val.Frames[ks].Frame = frame + fs.Frame - 2
+								val.Frames[ks].Frame = frame + fs.Frame - subCount
 							}
 							allFunRow.Allvalues[key2].Frames = append(allFunRow.Allvalues[key2].Frames, val.Frames...)
 						}
 					}
 					if !ishasdata {
 						for key, fs := range val.Frames {
-							val.Frames[key].Frame = frame + fs.Frame - 2
+							val.Frames[key].Frame = frame + fs.Frame - subCount
 						}
 						allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 					}
@@ -251,6 +262,8 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	//入库
 	DataBase.InsertCaseFunRow(insertCaseFunRow)
 	DataBase.ModifyMain(maintable.UUID, 1, totalFrame)
+	//成功合入库上报
+	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
 //开始合并且入库操作
