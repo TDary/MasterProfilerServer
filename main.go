@@ -9,6 +9,8 @@ import (
 )
 
 func main() {
+	//日志初始化
+	Logs.Init()
 	Logs.Loggers().Print("Welcome to use ServerMaster")
 	//初始化数据库配置
 	DataBase.InitDB()
