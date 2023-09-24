@@ -44,6 +44,7 @@ func InsertsMain(datas []MainTable) {
 	}
 }
 
+//插入子表数据
 func InsertsSub(datas []SubTable) {
 	col := mong.Database("MyDB").Collection("SubTable")
 	indata := []interface{}{datas}
@@ -56,6 +57,7 @@ func InsertsSub(datas []SubTable) {
 	}
 }
 
+//插入基础数据
 func InsertSimpleData(datas []InsertSimple) {
 	// 将 []InsertSimple 转换为 []interface{}
 	// 创建新的 []interface{} 切片，并从 []InsertSimple 复制值
@@ -72,6 +74,7 @@ func InsertSimpleData(datas []InsertSimple) {
 	}
 }
 
+//插入FunRow数据
 func InsertCaseFunRow(datas []CaseFunRow) {
 	// 将 []CaseFunRow 转换为 []interface{}
 	// 创建新的 []interface{} 切片，并从 []CaseFunRow 复制值
@@ -85,5 +88,15 @@ func InsertCaseFunRow(datas []CaseFunRow) {
 		Logs.Loggers().Print(err.Error())
 	} else {
 		Logs.Loggers().Print("FunRow插入数据成功----")
+	}
+}
+
+func InsertFunNamePath(datas CaseFunNamePath) {
+	col := mong.Database("MyDB").Collection("FunNamePath")
+	_, err := col.InsertOne(context.Background(), datas)
+	if err != nil {
+		Logs.Loggers().Print(err.Error())
+	} else {
+		Logs.Loggers().Print("FunNamePath插入数据成功----")
 	}
 }

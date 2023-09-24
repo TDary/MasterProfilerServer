@@ -46,6 +46,11 @@ type CaseFunRow struct {
 	Frames []FunRowInfo
 }
 
+type CaseFunNamePath struct {
+	UUID  string
+	Stack []string
+}
+
 type FunRowInfo struct {
 	Frame   int32
 	Total   int32

@@ -133,12 +133,15 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 //合并funprofiler数据
 func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	var allFunRow Data.AllCaseFunRow
+	var allCaseFunName Data.ListCaseFunName
 	var insertCaseFunRow []DataBase.CaseFunRow
+	var insertCaseFunPath DataBase.CaseFunNamePath
 	var frame int32
 	frame = 1
 	for _, val := range maintable.RawFiles {
 		rawPath := dataPath + "/" + val
 		currentFunRowData := &Data.AllCaseFunRow{}
+		currentFunNameData := &Data.ListCaseFunName{}
 		var isExit, _ = ioutil.ReadFile(rawPath)
 		if isExit != nil {
 			//存在分析文件，可直接反序列化,解压后再反序列化
@@ -149,6 +152,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 				return
 			}
 			rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
+			funNamePath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funname.bin"
 			//合并FunRow
 			bytedata, err := ioutil.ReadFile(rowDataPath)
 			if err != nil {
@@ -183,6 +187,30 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 					allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 				}
 			}
+			//合并FunNamePath
+			bytedata2, err := ioutil.ReadFile(funNamePath)
+			if err != nil {
+				//打开失败
+				Logs.Loggers().Print("打开分析文件失败----", funNamePath)
+				return
+			}
+			err = proto.Unmarshal(bytedata2, currentFunNameData)
+			if err != nil {
+				Logs.Loggers().Print("反序列化失败----", err.Error())
+				return
+			}
+			for _, name := range currentFunNameData.Funnames {
+				ishasdata := false
+				for _, name2 := range allCaseFunName.Funnames {
+					if name == name2 {
+						ishasdata = true
+						//不重复添加，在此跳过
+					}
+				}
+				if !ishasdata {
+					allCaseFunName.Funnames = append(allCaseFunName.Funnames, name)
+				}
+			}
 		} else {
 			//不存在分析文件，先从minio下载在进行反序列化
 			objectName := maintable.UUID + "/" + val
@@ -195,6 +223,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 					return
 				}
 				rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
+				funNamePath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funname.bin"
 				//合并FunRow
 				bytedata, err := ioutil.ReadFile(rowDataPath)
 				if err != nil {
@@ -229,6 +258,30 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 						allFunRow.Allvalues = append(allFunRow.Allvalues, val)
 					}
 				}
+				//合并FunNamePath
+				bytedata2, err := ioutil.ReadFile(funNamePath)
+				if err != nil {
+					//打开失败
+					Logs.Loggers().Print("打开分析文件失败----", funNamePath)
+					return
+				}
+				err = proto.Unmarshal(bytedata2, currentFunNameData)
+				if err != nil {
+					Logs.Loggers().Print("反序列化失败----", err.Error())
+					return
+				}
+				for _, name := range currentFunNameData.Funnames {
+					ishasdata := false
+					for _, name2 := range allCaseFunName.Funnames {
+						if name == name2 {
+							ishasdata = true
+							//不重复添加，在此跳过
+						}
+					}
+					if !ishasdata {
+						allCaseFunName.Funnames = append(allCaseFunName.Funnames, name)
+					}
+				}
 			}
 		}
 		if len(currentFunRowData.Allvalues[0].Frames) != 0 {
@@ -259,8 +312,11 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 		}
 		insertCaseFunRow = append(insertCaseFunRow, caseFunRow)
 	}
+	insertCaseFunPath.UUID = maintable.UUID
+	insertCaseFunPath.Stack = allCaseFunName.Funnames
 	//入库
 	DataBase.InsertCaseFunRow(insertCaseFunRow)
+	DataBase.InsertFunNamePath(insertCaseFunPath)
 	DataBase.ModifyMain(maintable.UUID, 1, totalFrame)
 	//成功合入库上报
 	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
