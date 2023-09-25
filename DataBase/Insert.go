@@ -92,8 +92,9 @@ func InsertCaseFunRow(datas []CaseFunRow) {
 }
 
 func InsertFunNamePath(datas CaseFunNamePath) {
+	var insertData interface{} = datas
 	col := mong.Database("MyDB").Collection("FunNamePath")
-	_, err := col.InsertOne(context.Background(), datas)
+	_, err := col.InsertOne(context.Background(), insertData)
 	if err != nil {
 		Logs.Loggers().Print(err.Error())
 	} else {
