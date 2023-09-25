@@ -366,8 +366,10 @@ func CheckCaseToMerge() {
 func CheckSub(uuid string) bool {
 	subt := DataBase.FindSubTableData(uuid)
 	if subt != nil {
-		for i := 0; i < len(subt); i++ {
-			if subt[i].State == 0 {
+		for _, val := range subt {
+			if val.State == 1 {
+				continue
+			} else {
 				return false
 			}
 		}
