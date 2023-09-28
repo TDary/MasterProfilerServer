@@ -14,10 +14,12 @@ func main() {
 	Logs.Loggers().Print("Welcome to use ServerMaster")
 	//初始化数据库配置
 	DataBase.InitDB()
-	//初始化服务器配置;
+	//初始化服务器配置
 	ServerUrl := AnalyzeServer.InitServer()
 	//启动开始处理完成解析消息系统
 	go AnalyzeServer.AnalyzeSuccessToMerge()
+	//检测失败任务
+	go AnalyzeServer.CheckFailedAnalyzeData()
 	//启动socket监听
 	HttpServer.ListenAndServer(ServerUrl)
 }

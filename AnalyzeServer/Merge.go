@@ -5,6 +5,7 @@ import (
 	"MasterServer/DataBase"
 	"MasterServer/Logs"
 	"MasterServer/Minio"
+	"MasterServer/RabbitMqServer"
 	"MasterServer/Tools"
 	"io/ioutil"
 	"os"
@@ -396,6 +397,9 @@ func ParseSuccessData(data string) {
 			addData.UUID = current[1]
 		}
 	}
+	if strings.Contains(addData.RawFile, ".zip") { //转换一下源文件
+		addData.RawFile = strings.Split(addData.RawFile, ".")[0] + ".raw"
+	}
 	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
 }
 
@@ -416,4 +420,6 @@ func ParseFailedData(data string) {
 		}
 	}
 	DataBase.UpdateStates(addData.RawFile, addData.UUID, -1, addData.IP) //更新状态值
+	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
+	RabbitMqServer.PutData(failedquePath, data)
 }

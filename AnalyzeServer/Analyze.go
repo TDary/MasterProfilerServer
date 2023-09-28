@@ -4,8 +4,10 @@ import (
 	"MasterServer/DataBase"
 	"MasterServer/Logs"
 	"MasterServer/RabbitMqServer"
+	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //停止采集信号
@@ -142,6 +144,7 @@ func AnalyzeRequest(data string) {
 					break
 				}
 			}
+			os.Remove(quePath) //拿完队列，将文件删除
 			break
 		} else {
 			//waiting
@@ -201,10 +204,16 @@ func AddOneForSubTable(data string) {
 			subt.RawFile = file[1]
 		}
 	}
-	if strings.Contains(subt.RawFile, ".zip") {
-		subt.RawFile = strings.Split(subt.RawFile, ".")[0] + ".raw"
-	}
 	subt.AnalyzeIP = ""
 	subt.State = 0
 	InsertSubTableBySub(subt) //插入一条子任务
+}
+
+//检测是否有失败解析的子任务
+func CheckFailedAnalyzeData() {
+	for {
+
+		//每隔一段时间进行检查
+		time.Sleep(1 * time.Hour)
+	}
 }

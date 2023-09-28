@@ -25,6 +25,7 @@ type ServerConfig struct {
 	Ip   string
 	Port string
 }
+
 type ConfigData struct {
 	Client          []ProfilerClient
 	MasterServer    ServerConfig
