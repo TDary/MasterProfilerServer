@@ -48,8 +48,7 @@ func HandleConnection(conn net.Conn) {
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "failledprofiler") {
 				Logs.Loggers().Print("接收到解析失败消息----", res)
-				faild := strings.Split(res, "?")[1]
-				go AnalyzeServer.ParseFailedData(faild)
+				go AnalyzeServer.ParseFailedData(res)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "rquestclient") {

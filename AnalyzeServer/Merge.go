@@ -405,13 +405,11 @@ func ParseSuccessData(data string) {
 
 //处理解析失败消息状态
 func ParseFailedData(data string) {
+	faild := strings.Split(data, "?")[1]
 	var addData SuccessData
-	splidata := strings.Split(data, "&")
+	splidata := strings.Split(faild, "&")
 	for i := 0; i < len(splidata); i++ {
-		if strings.Contains(splidata[i], "ip") {
-			current := strings.Split(splidata[i], "=")
-			addData.IP = current[1]
-		} else if strings.Contains(splidata[i], "rawfile") {
+		if strings.Contains(splidata[i], "rawfile") {
 			current := strings.Split(splidata[i], "=")
 			addData.RawFile = current[1]
 		} else if strings.Contains(splidata[i], "uuid") {
@@ -419,7 +417,7 @@ func ParseFailedData(data string) {
 			addData.UUID = current[1]
 		}
 	}
-	DataBase.UpdateStates(addData.RawFile, addData.UUID, -1, addData.IP) //更新状态值
+	DataBase.UpdatSubTableFailedStates(addData.RawFile, addData.UUID, -1) //更新状态值
 	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
 	RabbitMqServer.PutData(failedquePath, data)
 }

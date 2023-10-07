@@ -211,9 +211,26 @@ func AddOneForSubTable(data string) {
 
 //检测是否有失败解析的子任务
 func CheckFailedAnalyzeData() {
+	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
 	for {
-
-		//每隔一段时间进行检查
-		time.Sleep(1 * time.Hour)
+		time.Sleep(1 * time.Hour) //每隔一小时进行检查一次
+		data := RabbitMqServer.GetData(failedquePath)
+		if data != "" {
+			splitdata := strings.Split(data, "?")[1]
+			sendMsg := "requestanalyze?" + splitdata
+			//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
+			for _, val := range allAnalyzeClient {
+				n, err := GetConn(val.Ip, "anaclient").Write([]byte(sendMsg))
+				if err != nil && n == 0 {
+					Logs.Loggers().Print("发送重新解析消息失败----", err.Error(), data)
+					RabbitMqServer.PutData(failedquePath, data)
+					break
+				} else {
+					//
+					Logs.Loggers().Print("发送重新解析消息成功----", sendMsg)
+					break
+				}
+			}
+		}
 	}
 }
