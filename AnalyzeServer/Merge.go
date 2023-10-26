@@ -386,19 +386,18 @@ func ParseSuccessData(data string) {
 	var addData SuccessData
 	splidata := strings.Split(data, "&")
 	for i := 0; i < len(splidata); i++ {
+		splidata[i] = strings.TrimSpace(splidata[i])
 		if strings.Contains(splidata[i], "ip") {
 			current := strings.Split(splidata[i], "=")
 			addData.IP = current[1]
-		} else if strings.Contains(splidata[i], "rawfile") {
+		}
+		if strings.Contains(splidata[i], "rawfile") {
 			current := strings.Split(splidata[i], "=")
 			addData.RawFile = current[1]
 		} else if strings.Contains(splidata[i], "uuid") {
 			current := strings.Split(splidata[i], "=")
 			addData.UUID = current[1]
 		}
-	}
-	if strings.Contains(addData.RawFile, ".zip") { //转换一下源文件
-		addData.RawFile = strings.Split(addData.RawFile, ".")[0] + ".raw"
 	}
 	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
 }

@@ -11,7 +11,6 @@ import (
 func InitServer() string {
 	var data, _ = ioutil.ReadFile("./ServerConfig.json")
 	var err = json.Unmarshal(data, &config)
-	var client ClientState
 	if err != nil {
 		Logs.Loggers().Fatal(err)
 	}
@@ -28,6 +27,7 @@ func InitServer() string {
 	}
 
 	for _, val := range config.Client {
+		var client ClientState
 		client.Ip = val.Ip
 		client.IpAddress = val.Ip + ":" + val.Port
 		client.Num = val.WorkerNumbers

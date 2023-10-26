@@ -1,6 +1,8 @@
 package AnalyzeServer
 
-import "net"
+import (
+	"net"
+)
 
 //添加进入连接池
 func AddConnectior(conn net.Conn, machine string) {
@@ -8,10 +10,10 @@ func AddConnectior(conn net.Conn, machine string) {
 	remoteAddr := conn.RemoteAddr().(*net.TCPAddr)
 	currentIp := remoteAddr.IP.String()
 	isHas := false
-	for _, val := range allconnector {
+	for k, val := range allconnector {
 		if val.Ip == currentIp && val.Marchine == machine {
 			isHas = true
-			val.Conn = conn
+			allconnector[k].Conn = conn
 			break
 		}
 	}
@@ -20,6 +22,12 @@ func AddConnectior(conn net.Conn, machine string) {
 	cPool.Marchine = machine
 	if !isHas {
 		allconnector = append(allconnector, cPool)
+	}
+	//将解析器状态调整为空闲，设置之后可以进行解析操作
+	for key, val := range allAnalyzeClient {
+		if val.Ip == currentIp {
+			allAnalyzeClient[key].State = "idle"
+		}
 	}
 }
 
@@ -33,11 +41,11 @@ func GetConn(ip string, machine string) net.Conn {
 	return nil
 }
 
-//断开连接
+//断开连接，去除连接池中的连接
 func CloseConnect(ip string, machine string) {
 	for _, val := range allconnector {
 		if val.Ip == ip && machine == val.Marchine {
-			val.Conn.Close()
+			val.Conn = nil
 		}
 	}
 }

@@ -28,40 +28,11 @@ func StopAnalyzeRequest(mes string) {
 	stopMsg = append(stopMsg, data)
 }
 
-//获取空闲状态的解析器,供发送请求用
-func GetIdleAnalyzeClient() {
-	for _, val := range config.Client {
-		address := val.Ip + ":" + val.Port
-		res := RequestClientState(address)
-		if res.State == "idle" {
-			var current ClientState
-			current.IpAddress = address
-			current.State = res.State
-			current.Num = res.Num
-			ishas := false
-			for i := 0; i < len(allAnalyzeClient); i++ {
-				if allAnalyzeClient[i].IpAddress == address {
-					allAnalyzeClient[i].State = res.State
-					allAnalyzeClient[i].Num = res.Num
-					ishas = true
-					break
-				}
-			}
-			if !ishas {
-				allAnalyzeClient = append(allAnalyzeClient, current)
-				break
-			}
-		}
-	}
-
-}
-
 //检测最后一份源文件
 func GetLastRawFileIsSend(uuid string) int {
 	for _, val := range stopMsg {
 		if val.UUID == uuid {
 			return 1
-
 		}
 	}
 	return -1 //继续等待
@@ -102,14 +73,16 @@ func AnalyzeBegin(analze string, databaseData string) {
 	AddOneForSubTable(databaseData) //添加数据库子任务表
 	//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
 	for _, val := range allAnalyzeClient {
-		n, err := GetConn(val.Ip, "anaclient").Write([]byte(analze))
-		if err != nil && n == 0 {
-			Logs.Loggers().Print("发送解析消息失败----", err.Error())
-			break
-		} else {
-			//
-			// Logs.Loggers().Print("发送长度：", n)
-			break
+		if val.State == "idle" {
+			n, err := GetConn(val.Ip, "anaclient").Write([]byte(analze))
+			if err != nil && n == 0 {
+				Logs.Loggers().Print("发送解析消息失败----", err.Error())
+				break
+			} else {
+				//
+				// Logs.Loggers().Print("发送长度：", n)
+				break
+			}
 		}
 	}
 }
@@ -179,14 +152,16 @@ func ReProfilerAna(data string) {
 	DataBase.FindAndModify(uuid, rawfile, 0) //修改任务状态
 	//发送解析请求
 	for _, val := range allAnalyzeClient {
-		n, err := GetConn(val.Ip, "anaclient").Write([]byte(data))
-		if err != nil && n == 0 {
-			Logs.Loggers().Print("发送解析消息失败----", err.Error())
-			break
-		} else {
-			//
-			// Logs.Loggers().Print("发送长度：", n)
-			break
+		if val.State == "idle" {
+			n, err := GetConn(val.Ip, "anaclient").Write([]byte(data))
+			if err != nil && n == 0 {
+				Logs.Loggers().Print("发送解析消息失败----", err.Error())
+				break
+			} else {
+				//
+				// Logs.Loggers().Print("发送长度：", n)
+				break
+			}
 		}
 	}
 }

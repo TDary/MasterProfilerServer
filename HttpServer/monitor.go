@@ -12,7 +12,8 @@ func HandleConnection(conn net.Conn) {
 
 	// 处理连接逻辑
 	// 在这里可以读取和写入数据
-
+	var ConMachine string
+	var remoteIp string
 	message := "Welcome to the server!\n"
 	conn.Write([]byte(message))
 
@@ -23,6 +24,7 @@ func HandleConnection(conn net.Conn) {
 		if err != nil && n == 0 {
 			Logs.Loggers().Printf("Error reading from connection: %s", err.Error())
 			//断开连接，清除池子
+			AnalyzeServer.CloseConnect(remoteIp, ConMachine)
 			return
 		}
 		if len(buffer) != 0 {
@@ -72,7 +74,10 @@ func HandleConnection(conn net.Conn) {
 			} else if strings.Contains(res, "markeid") {
 				Logs.Loggers().Print("接收到加入连接消息----", res)
 				req := strings.Split(res, "?")[1]
-				AnalyzeServer.AddConnectior(conn, req)
+				ConMachine = req
+				remoteAddr := conn.RemoteAddr().(*net.TCPAddr)
+				remoteIp = remoteAddr.IP.String()
+				AnalyzeServer.AddConnectior(conn, ConMachine)
 			} else {
 				Logs.Loggers().Print("receive Data:", res)
 			}
@@ -94,7 +99,6 @@ func ListenAndServer(address string) {
 			Logs.Loggers().Printf("Failed to accept connection: %s", err.Error())
 			continue
 		}
-
 		// 处理连接
 		go HandleConnection(conn)
 	}
