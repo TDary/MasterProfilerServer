@@ -7,7 +7,6 @@ import (
 	"MasterServer/Minio"
 	"MasterServer/RabbitMqServer"
 	"MasterServer/Tools"
-	"io/ioutil"
 	"os"
 	"strings"
 	"time"
@@ -15,7 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-//对解析成功的消息进行检查判断是否可以进行合并操作
+// 对解析成功的消息进行检查判断是否可以进行合并操作
 func AnalyzeSuccessToMerge() {
 	for {
 		time.Sleep(30 * time.Second) //每隔30秒检查一次
@@ -23,13 +22,13 @@ func AnalyzeSuccessToMerge() {
 	}
 }
 
-//合并simple数据
+// 合并simple数据
 func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 	var allSimpleData Data.Simples
 	var insertDatas []DataBase.InsertSimple
 	for _, val := range maintable.RawFiles {
 		rawPath := dataPath + "/" + val
-		var isExit, _ = ioutil.ReadFile(rawPath)
+		var isExit, _ = os.ReadFile(rawPath)
 		currentSimpleData := &Data.Simples{}
 		if isExit != nil {
 			//存在分析文件，可直接反序列化,解压后再反序列化
@@ -40,7 +39,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 				return
 			}
 			simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw.csv"
-			bytedata, err := ioutil.ReadFile(simpleDataPath)
+			bytedata, err := os.ReadFile(simpleDataPath)
 			if err != nil {
 				//打开失败
 				Logs.Loggers().Print("打开分析文件失败----", simpleDataPath)
@@ -75,7 +74,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 					return
 				}
 				simpleDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw.csv"
-				bytedata, err := ioutil.ReadFile(simpleDataPath)
+				bytedata, err := os.ReadFile(simpleDataPath)
 				if err != nil {
 					//打开失败
 					Logs.Loggers().Print("打开分析文件失败----", rawPath)
@@ -131,7 +130,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
-//合并funprofiler数据
+// 合并funprofiler数据
 func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	var allFunRow Data.AllCaseFunRow
 	var allCaseFunName Data.ListCaseFunName
@@ -143,7 +142,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 		rawPath := dataPath + "/" + val
 		currentFunRowData := &Data.AllCaseFunRow{}
 		currentFunNameData := &Data.ListCaseFunName{}
-		var isExit, _ = ioutil.ReadFile(rawPath)
+		var isExit, _ = os.ReadFile(rawPath)
 		if isExit != nil {
 			//存在分析文件，可直接反序列化,解压后再反序列化
 			err := Tools.ExtractZip(rawPath, dataPath)
@@ -155,7 +154,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 			rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
 			funNamePath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funname.bin"
 			//合并FunRow
-			bytedata, err := ioutil.ReadFile(rowDataPath)
+			bytedata, err := os.ReadFile(rowDataPath)
 			if err != nil {
 				//打开失败
 				Logs.Loggers().Print("打开分析文件失败----", rowDataPath)
@@ -189,7 +188,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 				}
 			}
 			//合并FunNamePath
-			bytedata2, err := ioutil.ReadFile(funNamePath)
+			bytedata2, err := os.ReadFile(funNamePath)
 			if err != nil {
 				//打开失败
 				Logs.Loggers().Print("打开分析文件失败----", funNamePath)
@@ -226,7 +225,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 				rowDataPath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funrow.bin"
 				funNamePath := dataPath + "/" + strings.Split(val, ".")[0] + ".raw_funname.bin"
 				//合并FunRow
-				bytedata, err := ioutil.ReadFile(rowDataPath)
+				bytedata, err := os.ReadFile(rowDataPath)
 				if err != nil {
 					//打开失败
 					Logs.Loggers().Print("打开分析文件失败----", rowDataPath)
@@ -260,7 +259,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 					}
 				}
 				//合并FunNamePath
-				bytedata2, err := ioutil.ReadFile(funNamePath)
+				bytedata2, err := os.ReadFile(funNamePath)
 				if err != nil {
 					//打开失败
 					Logs.Loggers().Print("打开分析文件失败----", funNamePath)
@@ -326,9 +325,9 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
-//开始合并且入库操作
+// 开始合并且入库操作
 func MergeBegin(maintable DataBase.MainTable) {
-	dataPath := config.MergePath + "/" + maintable.UUID
+	dataPath := config.Minioconfig.MergePath + "/" + maintable.UUID
 	_, err := os.Stat(dataPath)
 	if err != nil {
 		Logs.Loggers().Printf("当前文件夹%s不存在，重新创建中！", dataPath)
@@ -345,7 +344,7 @@ func MergeBegin(maintable DataBase.MainTable) {
 	}
 }
 
-//检查案例状态是否有可以进行合并的
+// 检查案例状态是否有可以进行合并的
 func CheckCaseToMerge() {
 	waitCase := DataBase.FindMainTable(0)
 	if len(waitCase) > 0 {
@@ -363,7 +362,7 @@ func CheckCaseToMerge() {
 	}
 }
 
-//检查子表
+// 检查子表
 func CheckSub(uuid string) bool {
 	subt := DataBase.FindSubTableData(uuid)
 	if subt != nil {
@@ -381,7 +380,7 @@ func CheckSub(uuid string) bool {
 	}
 }
 
-//处理解析成功消息状态
+// 处理解析成功消息状态
 func ParseSuccessData(data string) {
 	var addData SuccessData
 	splidata := strings.Split(data, "&")
@@ -402,7 +401,7 @@ func ParseSuccessData(data string) {
 	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
 }
 
-//处理解析失败消息状态
+// 处理解析失败消息状态
 func ParseFailedData(data string) {
 	faild := strings.Split(data, "?")[1]
 	var addData SuccessData

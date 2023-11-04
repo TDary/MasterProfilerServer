@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-//清除数据库无用数据
+// 清除数据库无用数据
 func ClearDataBase() {
 	waitCase := DataBase.FindMainTable(1)
 	if len(waitCase) > 0 {
@@ -24,7 +24,7 @@ func ClearDataBase() {
 	}
 }
 
-//解压zip文件
+// 解压zip文件
 func ExtractZip(zipFile string, targetFolder string) error {
 	reader, err := zip.OpenReader(zipFile)
 	if err != nil {
@@ -67,7 +67,7 @@ func ExtractZip(zipFile string, targetFolder string) error {
 	return nil
 }
 
-//发送机器人提醒消息
+// 发送机器人提醒消息
 func SendRobotMsg(url string, msg string) {
 	var sendArgs strings.Builder
 	sendArgs.WriteString(`{"msg_type":"post","content":{"post":{"zh_cn":{"content":[[{"tag":"text","text":"`)

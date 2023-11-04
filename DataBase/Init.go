@@ -8,9 +8,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func InitDB() {
+func InitDB(dbAddress string, dbname string, mainTable string, subTable string, funRow string, simpleData string, funPath string) {
 	var err error
-	clientOption := options.Client().ApplyURI("mongodb://10.11.144.31:27171")
+	clientOption := options.Client().ApplyURI(dbAddress) //"mongodb://192.168.31.40:27171"
 
 	//连接到MongoDB
 	mong, err = mongo.Connect(context.TODO(), clientOption)
@@ -22,5 +22,12 @@ func InitDB() {
 	if err != nil {
 		Logs.Loggers().Fatal(err)
 	}
+
+	databaseName = dbname
+	maintable = mainTable
+	subtable = subTable
+	funrow = funRow
+	simpledata = simpleData
+	funpath = funPath
 	Logs.Loggers().Print("数据库初始化完毕----")
 }

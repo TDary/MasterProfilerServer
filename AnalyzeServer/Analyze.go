@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-//停止采集信号
+// 停止采集信号
 func StopAnalyzeRequest(mes string) {
 	var data EndData
 	str1 := strings.Split(mes, "&")
@@ -28,7 +28,7 @@ func StopAnalyzeRequest(mes string) {
 	stopMsg = append(stopMsg, data)
 }
 
-//检测最后一份源文件
+// 检测最后一份源文件
 func GetLastRawFileIsSend(uuid string) int {
 	for _, val := range stopMsg {
 		if val.UUID == uuid {
@@ -38,7 +38,7 @@ func GetLastRawFileIsSend(uuid string) int {
 	return -1 //继续等待
 }
 
-//将原始文件进行排序
+// 将原始文件进行排序
 func SortRawFils(rawfiles []string) {
 	for i := 0; i < len(rawfiles)-1; i++ {
 		for j := 0; j < len(rawfiles)-i-1; j++ {
@@ -59,7 +59,7 @@ func SortRawFils(rawfiles []string) {
 	}
 }
 
-//发送开始采集失败的消息
+// 发送开始采集失败的消息
 func SendFailToGather(uuid string, ip string) {
 	msg := "开始采集失败，当前存在重复的UUID" + uuid
 	n, err := GetConn(ip, "collector").Write([]byte(msg))
@@ -68,7 +68,7 @@ func SendFailToGather(uuid string, ip string) {
 	}
 }
 
-//发送真正的解析请求
+// 发送真正的解析请求
 func AnalyzeBegin(analze string, databaseData string) {
 	AddOneForSubTable(databaseData) //添加数据库子任务表
 	//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
@@ -87,7 +87,7 @@ func AnalyzeBegin(analze string, databaseData string) {
 	}
 }
 
-//开始采集并解析的消息
+// 开始采集并解析的消息
 func AnalyzeRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
 	mtable := ReceiveMes(data)
@@ -125,7 +125,7 @@ func AnalyzeRequest(data string) {
 	}
 }
 
-//查询正在运行的工作机
+// 查询正在运行的工作机
 func CheckKey(key string) bool {
 	for _, val := range allAnalyzeClient {
 		if val.Ip == key {
@@ -135,7 +135,7 @@ func CheckKey(key string) bool {
 	return false
 }
 
-//重新解析
+// 重新解析
 func ReProfilerAna(data string) {
 	spldata := strings.Split(data, "&")
 	var uuid string
@@ -166,7 +166,7 @@ func ReProfilerAna(data string) {
 	}
 }
 
-//添加一项子表任务
+// 添加一项子表任务
 func AddOneForSubTable(data string) {
 	var subt DataBase.SubTable
 	spldata := strings.Split(data, "&")
@@ -184,7 +184,7 @@ func AddOneForSubTable(data string) {
 	InsertSubTableBySub(subt) //插入一条子任务
 }
 
-//检测是否有失败解析的子任务
+// 检测是否有失败解析的子任务
 func CheckFailedAnalyzeData() {
 	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
 	for {

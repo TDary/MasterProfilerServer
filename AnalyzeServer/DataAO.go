@@ -26,14 +26,35 @@ type ServerConfig struct {
 	Port string
 }
 
-type ConfigData struct {
-	Client          []ProfilerClient
-	MasterServer    ServerConfig
+type DBConfig struct {
+	Address    string
+	DBName     string
+	Collection DBCollections
+}
+
+type DBCollections struct {
+	MainTable   string
+	SubTable    string
+	FunRow      string
+	SimpleTable string
+	FunPath     string
+}
+
+type MinioConfig struct {
 	MinioServerPath string
 	MinioBucket     string
 	MinioRawBucket  string
 	MergePath       string
-	RobotUrl        string
+	UserName        string
+	PassWord        string
+}
+
+type ConfigData struct {
+	Client       []ProfilerClient
+	MasterServer ServerConfig
+	Database     DBConfig
+	Minioconfig  MinioConfig
+	RobotUrl     string
 }
 
 type ClientState struct {

@@ -7,6 +7,12 @@ import (
 var mong *mongo.Client
 var erMainTData []MainTable
 var erSubTdata []SubTable
+var databaseName string
+var maintable string
+var subtable string
+var funrow string
+var simpledata string
+var funpath string
 
 type MainTable struct {
 	AppKey          string
