@@ -32,6 +32,7 @@ func InitServer() string {
 		client.IpAddress = val.Ip + ":" + val.Port
 		client.Num = val.WorkerNumbers
 		client.State = "out"
+		client.AnalyzeType = val.WorkType
 		allAnalyzeClient = append(allAnalyzeClient, client)
 	}
 	//初始化数据库配置与Minio服务配置

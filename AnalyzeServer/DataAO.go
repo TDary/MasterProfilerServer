@@ -58,10 +58,11 @@ type ConfigData struct {
 }
 
 type ClientState struct {
-	Ip        string
-	IpAddress string
-	State     string
-	Num       int
+	Ip          string
+	IpAddress   string
+	State       string
+	Num         int
+	AnalyzeType string
 }
 
 type AnalyzeData struct {

@@ -5,7 +5,13 @@
             "Ip": "10.11.144.31",
             "port":"7950",
             "WorkerNumbers" : 4,
-            "WorkType" : "Analyze"
+            "WorkType" : "simple"
+        },
+        {
+            "Ip": "10.11.144.31",
+            "port":"8950",
+            "WorkerNumbers" : 4,
+            "WorkType" : "funprofiler"
         }
     ],
     "MasterServer":{
@@ -27,7 +33,7 @@
         "MinioServerPath":"192.168.31.40:8001",
         "MinioBucket":"analyzedata",
         "MinioRawBucket":"rawdata",
-        "MergePath":"E:/MergeData",
+        "MergePath":"D:/MergeData",
         "UserName":"guest",
         "PassWord":"guest123"
     },

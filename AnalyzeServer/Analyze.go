@@ -70,10 +70,10 @@ func SendFailToGather(uuid string, ip string) {
 
 // 发送真正的解析请求
 func AnalyzeBegin(analze string, databaseData string) {
-	AddOneForSubTable(databaseData) //添加数据库子任务表
+	analyzetype := AddOneForSubTable(databaseData) //添加数据库子任务表
 	//发送解析请求,随便发送一台空闲的解析器让其进行轮转解析
 	for _, val := range allAnalyzeClient {
-		if val.State == "idle" {
+		if val.State == "idle" && val.AnalyzeType == analyzetype {
 			n, err := GetConn(val.Ip, "anaclient").Write([]byte(analze))
 			if err != nil && n == 0 {
 				Logs.Loggers().Print("发送解析消息失败----", err.Error())
@@ -167,8 +167,9 @@ func ReProfilerAna(data string) {
 }
 
 // 添加一项子表任务
-func AddOneForSubTable(data string) {
+func AddOneForSubTable(data string) string { //返回文件解析类型
 	var subt DataBase.SubTable
+	var anaType string
 	spldata := strings.Split(data, "&")
 	for i := 0; i < len(spldata); i++ {
 		if strings.Contains(spldata[i], "uuid") {
@@ -177,11 +178,15 @@ func AddOneForSubTable(data string) {
 		} else if strings.Contains(spldata[i], "rawfile") {
 			file := strings.Split(spldata[i], "=")
 			subt.RawFile = file[1]
+		} else if strings.Contains(spldata[i], "analyzeType") {
+			anatype := strings.Split(spldata[i], "=")
+			anaType = anatype[1]
 		}
 	}
 	subt.AnalyzeIP = ""
 	subt.State = 0
 	InsertSubTableBySub(subt) //插入一条子任务
+	return anaType
 }
 
 // 检测是否有失败解析的子任务
