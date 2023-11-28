@@ -331,7 +331,7 @@ func MergeBegin(maintable DataBase.MainTable) {
 	_, err := os.Stat(dataPath)
 	if err != nil {
 		Logs.Loggers().Printf("当前文件夹%s不存在，重新创建中！", dataPath)
-		os.Mkdir(dataPath, 0755)
+		os.MkdirAll(dataPath, 0755)
 	}
 	if maintable.AnalyzeType == "simple" {
 		//simple数据合并

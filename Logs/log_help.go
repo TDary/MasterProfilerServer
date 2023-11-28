@@ -11,7 +11,7 @@ var loger *log.Logger
 func Init() {
 	_, err := os.Stat("./log")
 	if err != nil {
-		os.Mkdir("./log", 0755)
+		os.MkdirAll("./log", 0755)
 	}
 	file := "./log/" + time.Now().Format("2006-01-02") + ".txt"
 	logFile, err := os.OpenFile(file, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0766)
