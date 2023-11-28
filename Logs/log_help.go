@@ -18,7 +18,7 @@ func Init() {
 	if err != nil {
 		panic(err)
 	}
-	loger = log.New(logFile, "[logTool]", log.Ltime|log.Lshortfile)
+	loger = log.New(logFile, "[logTool]", log.Ltime|log.Llongfile)
 	// 将文件设置为loger作为输出
 }
 
