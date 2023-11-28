@@ -37,5 +37,5 @@
         "UserName":"guest",
         "PassWord":"guest123"
     },
-    "RobotUrl" : "https://open.feishu.cn/open-apis/bot/v2/hook/a26d909f-fbec-45e5-8b58-c920f1a35ce1"
+    "RobotUrl" : "https://xz.wps.cn/api/v1/webhook/send?key=159c01c33a8a2c756a41dcce0157bd78"
 }

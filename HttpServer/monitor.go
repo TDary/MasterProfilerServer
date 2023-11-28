@@ -86,6 +86,9 @@ func HandleConnection(conn net.Conn) {
 }
 
 func ListenAndServer(address string) {
+	if address == "" {
+		return
+	}
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		Logs.Loggers().Fatalf("Failed to listen: %s", err.Error())
