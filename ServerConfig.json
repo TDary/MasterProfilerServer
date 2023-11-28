@@ -15,11 +15,11 @@
         }
     ],
     "MasterServer":{
-        "ip":"192.168.31.28",
+        "ip":"10.11.144.31",
         "port":"6950"
     },
     "Database":{
-        "Address":"mongodb://192.168.31.40:27171",
+        "Address":"mongodb://10.11.144.31:27171",
         "DBName":"MyDB",
         "Collection":{
             "MainTable":"MainTable",
@@ -30,12 +30,12 @@
         }
     },
     "Minioconfig":{
-        "MinioServerPath":"192.168.31.40:8001",
+        "MinioServerPath":"10.11.144.31:8001",
         "MinioBucket":"analyzedata",
         "MinioRawBucket":"rawdata",
-        "MergePath":"D:/MergeData",
-        "UserName":"guest",
-        "PassWord":"guest123"
+        "MergePath":"D:/MasterAnalyzePath/MergeData",
+        "UserName":"cdr",
+        "PassWord":"cdrmm666!@#"
     },
     "RobotUrl" : "https://xz.wps.cn/api/v1/webhook/send?key=159c01c33a8a2c756a41dcce0157bd78"
 }

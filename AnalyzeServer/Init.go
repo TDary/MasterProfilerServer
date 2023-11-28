@@ -26,7 +26,7 @@ func InitServer() string {
 	_, err = os.Stat(config.Minioconfig.MergePath)
 	if err != nil {
 		Logs.Loggers().Printf("当前文件夹%s不存在，重新创建中！", config.Minioconfig.MergePath)
-		os.Mkdir(config.Minioconfig.MergePath, 0755)
+		os.MkdirAll(config.Minioconfig.MergePath, 0755)
 	}
 
 	filepath := "./ServerQue"
