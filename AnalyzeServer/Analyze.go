@@ -149,7 +149,9 @@ func ReProfilerAna(data string) {
 			rawfile = file[1]
 		}
 	}
-	DataBase.FindAndModify(uuid, rawfile, 0) //修改任务状态
+	currentTime := time.Now()
+	unixTime := currentTime.Unix()
+	DataBase.FindAndModify(uuid, rawfile, 0, unixTime) //修改任务状态
 	//发送解析请求
 	for _, val := range allAnalyzeClient {
 		if val.State == "idle" {
@@ -185,13 +187,15 @@ func AddOneForSubTable(data string) string { //返回文件解析类型
 	}
 	subt.AnalyzeIP = ""
 	subt.State = 0
+	currentTime := time.Now()
+	beginUnixTime := currentTime.Unix()
+	subt.AnalyzeBegin = beginUnixTime
 	InsertSubTableBySub(subt) //插入一条子任务
 	return anaType
 }
 
 // 检测是否有失败解析的子任务
 func CheckFailedAnalyzeData() {
-	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
 	for {
 		time.Sleep(1 * time.Hour) //每隔一小时进行检查一次
 		data := RabbitMqServer.GetData(failedquePath)

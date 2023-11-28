@@ -349,7 +349,7 @@ func CheckCaseToMerge() {
 	waitCase := DataBase.FindMainTable(0)
 	if len(waitCase) > 0 {
 		for _, val := range waitCase {
-			currentCase := CheckSub(val.UUID)
+			currentCase := CheckSub(val)
 			if currentCase {
 				//当前案例可以进行合并操作了
 				DataBase.ModifyMainState(val.UUID, 3)
@@ -363,20 +363,57 @@ func CheckCaseToMerge() {
 }
 
 // 检查子表
-func CheckSub(uuid string) bool {
-	subt := DataBase.FindSubTableData(uuid)
+func CheckSub(mt DataBase.MainTable) bool {
+	subt := DataBase.FindSubTableData(mt.UUID)
 	if subt != nil {
 		for _, val := range subt {
 			if val.State == 1 {
 				continue
-			} else {
+			} else if val.State == -1 {
+				return false
+			} else if val.State == 0 {
+				CheckSubAnalyzeState(val, mt)
 				return false
 			}
 		}
 		return true
 	} else {
-		Logs.Loggers().Print("不存在该UUID：" + uuid + "的子表数据")
+		Logs.Loggers().Print("不存在该UUID：" + mt.UUID + "的子表数据")
 		return false
+	}
+}
+
+func CheckSubAnalyzeState(subt DataBase.SubTable, mt DataBase.MainTable) {
+	if subt.AnalyzeBegin != 0 && time.Now().Unix()-subt.AnalyzeBegin > 300 {
+		//5分钟超时解析就判断为解析失败
+		//重新解析，此种针对的是丢失的任务，解析器突然掉线的情况
+		var data strings.Builder
+		data.WriteString("requestanalyze?uuid=")
+		data.WriteString(mt.UUID)
+		data.WriteString("&rawfile=")
+		data.WriteString(subt.RawFile)
+		data.WriteString("&rawfilename=")
+		data.WriteString(mt.UUID + "/" + subt.RawFile)
+		data.WriteString("&unityversion=")
+		data.WriteString(mt.UnityVersion)
+		data.WriteString("&analyzebucket=")
+		data.WriteString(mt.AnalyzeBucket)
+		data.WriteString("&analyzeType=")
+		data.WriteString(mt.AnalyzeType)
+		//发送解析请求
+		for _, val := range allAnalyzeClient {
+			if val.State == "idle" {
+				n, err := GetConn(val.Ip, "anaclient").Write([]byte(data.String()))
+				if err != nil && n == 0 {
+					Logs.Loggers().Print("发送解析消息失败----", err.Error())
+					break
+				} else {
+					//
+					// Logs.Loggers().Print("发送长度：", n)
+					break
+				}
+			}
+		}
 	}
 }
 
@@ -398,7 +435,9 @@ func ParseSuccessData(data string) {
 			addData.UUID = current[1]
 		}
 	}
-	DataBase.UpdateStates(addData.RawFile, addData.UUID, 1, addData.IP) //更新状态值
+	currentTime := time.Now()
+	unixTime := currentTime.Unix()
+	DataBase.UpdateSuccessStates(addData.RawFile, addData.UUID, 1, addData.IP, unixTime) //更新状态值
 }
 
 // 处理解析失败消息状态
@@ -416,6 +455,5 @@ func ParseFailedData(data string) {
 		}
 	}
 	DataBase.UpdatSubTableFailedStates(addData.RawFile, addData.UUID, -1) //更新状态值
-	failedquePath := "./ServerQue/" + "FialedAnalyzeQue"
 	RabbitMqServer.PutData(failedquePath, data)
 }

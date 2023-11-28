@@ -46,7 +46,7 @@ func UpdateMainTable(appkey string, uuid string, rawFiles []string) {
 //更新解析失败的任务状态
 func UpdatSubTableFailedStates(rawfilename string, uuid string, state int) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.M{"$set": bson.M{"state": state}}
+	update := bson.M{"$set": bson.M{"state": state, "analyzebegin": 0}}
 	_, err := col.UpdateOne(context.TODO(), bson.M{"uuid": uuid, "rawfile": rawfilename}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
@@ -54,9 +54,9 @@ func UpdatSubTableFailedStates(rawfilename string, uuid string, state int) {
 }
 
 //更新子表成功状态
-func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
+func UpdateSuccessStates(rawfilename string, uuid string, state int, anaip string, unixTime int64) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.M{"$set": bson.M{"state": state, "analyzeip": anaip}}
+	update := bson.M{"$set": bson.M{"state": state, "analyzeip": anaip, "analyzeend": unixTime}}
 	_, err := col.UpdateOne(context.TODO(), bson.M{"uuid": uuid, "rawfile": rawfilename}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)
@@ -64,9 +64,9 @@ func UpdateStates(rawfilename string, uuid string, state int, anaip string) {
 }
 
 //将失败的任务进行重新解析
-func FindAndModify(uuid string, rawfile string, state int) {
+func FindAndModify(uuid string, rawfile string, state int, unixTime int64) {
 	col := mong.Database("MyDB").Collection("SubTable")
-	update := bson.M{"$set": bson.M{"state": state}}
+	update := bson.M{"$set": bson.M{"state": state, "analyzebegin": unixTime}}
 	_, err := col.UpdateOne(context.TODO(), bson.M{"uuid": uuid, "rawfile": rawfile}, update)
 	if err != nil {
 		Logs.Loggers().Print(err)

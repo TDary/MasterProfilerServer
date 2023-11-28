@@ -6,6 +6,7 @@ var config ConfigData
 var allAnalyzeClient []ClientState
 var stopMsg []EndData
 var allconnector []ConnectPool //连接池
+var failedquePath string       //失败解析队列
 
 type SuccessData struct {
 	UUID    string

@@ -34,10 +34,12 @@ type MainTable struct {
 }
 
 type SubTable struct {
-	UUID      string
-	RawFile   string
-	AnalyzeIP string
-	State     int
+	UUID         string
+	RawFile      string
+	AnalyzeIP    string
+	State        int
+	AnalyzeBegin int64
+	AnalyzeEnd   int64
 }
 
 type InsertSimple struct {

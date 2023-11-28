@@ -11,6 +11,7 @@ import (
 )
 
 func InitServer() string {
+	failedquePath = "./ServerQue/" + "FialedAnalyzeQue"
 	var data, _ = ioutil.ReadFile("./ServerConfig.dat")
 	key := []byte("eb3386a8a8f57a579c93fdfb33ec9471") // 加密密钥，长度为16, 24, 或 32字节，对应AES-128, AES-192, AES-256
 	decryptedData, err := Tools.Decrypt(data, key)
