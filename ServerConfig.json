@@ -2,7 +2,7 @@
     "Client" : 
     [
         {
-            "Ip": "10.11.144.31",
+            "Ip": "10.11.145.45",
             "port":"7950",
             "WorkerNumbers" : 4,
             "WorkType" : "simple"
