@@ -79,7 +79,7 @@ func AnalyzeBegin(analze string, databaseData string) {
 				Logs.Loggers().Print("发送解析消息失败----", err.Error())
 				break
 			} else {
-				//
+				//Logs.Loggers().Print("发送请求解析成功~")
 				// Logs.Loggers().Print("发送长度：", n)
 				break
 			}
@@ -180,7 +180,7 @@ func AddOneForSubTable(data string) string { //返回文件解析类型
 		} else if strings.Contains(spldata[i], "rawfile") {
 			file := strings.Split(spldata[i], "=")
 			subt.RawFile = file[1]
-		} else if strings.Contains(spldata[i], "analyzeType") {
+		} else if strings.Contains(spldata[i], "analyzetype") {
 			anatype := strings.Split(spldata[i], "=")
 			anaType = anatype[1]
 		}

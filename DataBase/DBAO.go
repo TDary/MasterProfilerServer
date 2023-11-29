@@ -48,6 +48,13 @@ type InsertSimple struct {
 	Values []float32
 }
 
+type CaseFunRowAlone struct {
+	UUID         string
+	Name         string
+	AvgValidTime int32
+	Frames       []FunRowInfoAlone
+}
+
 type CaseFunRow struct {
 	UUID         string
 	Name         string
@@ -64,6 +71,14 @@ type FunRowInfo struct {
 	Frame   int32
 	Total   int32
 	Self    int32
+	Calls   int32
+	Gcalloc int32
+	Timems  int32
+	Selfms  int32
+}
+
+type FunRowInfoAlone struct {
+	Frame   int32
 	Calls   int32
 	Gcalloc int32
 	Timems  int32

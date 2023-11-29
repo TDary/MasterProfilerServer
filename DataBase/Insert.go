@@ -74,6 +74,23 @@ func InsertSimpleData(datas []InsertSimple) {
 	}
 }
 
+//插入FunRowAlone数据
+func InsertCaseFunRowAlone(datas []CaseFunRowAlone) {
+	// 将 []CaseFunRow 转换为 []interface{}
+	// 创建新的 []interface{} 切片，并从 []CaseFunRow 复制值
+	interfaceSlice := make([]interface{}, len(datas))
+	for i, v := range datas {
+		interfaceSlice[i] = v
+	}
+	col := mong.Database("MyDB").Collection("FunRow")
+	_, err := col.InsertMany(context.Background(), interfaceSlice)
+	if err != nil {
+		Logs.Loggers().Print(err.Error())
+	} else {
+		Logs.Loggers().Print("FunRow插入数据成功----")
+	}
+}
+
 //插入FunRow数据
 func InsertCaseFunRow(datas []CaseFunRow) {
 	// 将 []CaseFunRow 转换为 []interface{}
