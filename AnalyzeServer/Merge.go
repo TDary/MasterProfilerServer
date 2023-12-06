@@ -570,6 +570,7 @@ func CheckSub(mt DataBase.MainTable) bool {
 				return false
 			} else if val.State == 0 {
 				CheckSubAnalyzeState(val, mt)
+				time.Sleep(1 * time.Second)
 				res = false
 			}
 		}
