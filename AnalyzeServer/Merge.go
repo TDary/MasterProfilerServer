@@ -168,7 +168,7 @@ func MergeFunStanderAlone(maintable DataBase.MainTable, dataPath string) {
 			var subCount int32
 			for i := 0; i < len(currentFunRowData.Allvalues)-1; i++ {
 				if currentFunRowData.Allvalues[i].Name == "Main Thread" {
-					subCount = 300 - int32(len(currentFunRowData.Allvalues[i].Frames)-1) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
+					subCount = 300 - int32(len(currentFunRowData.Allvalues[i].Frames)) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
 				}
 				ishasdata := false
 				for key2, val2 := range allFunRow.Allvalues {
@@ -239,7 +239,7 @@ func MergeFunStanderAlone(maintable DataBase.MainTable, dataPath string) {
 				var subCount int32
 				for i := 0; i < len(currentFunRowData.Allvalues)-1; i++ {
 					if currentFunRowData.Allvalues[i].Name == "Main Thread" {
-						subCount = 300 - int32(len(currentFunRowData.Allvalues[i].Frames)-1) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
+						subCount = 300 - int32(len(currentFunRowData.Allvalues[i].Frames)) //默认300帧中会少2帧，但是由于某些情况中间有可能会缺一些
 					}
 					ishasdata := false
 					for key2, val2 := range allFunRow.Allvalues {
