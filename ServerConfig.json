@@ -2,24 +2,24 @@
     "Client" : 
     [
         {
-            "Ip": "10.11.145.45",
+            "Ip": "10.11.145.125",
             "port":"7950",
             "WorkerNumbers" : 4,
             "WorkType" : "simple"
         },
         {
-            "Ip": "10.11.144.31",
+            "Ip": "10.11.145.125",
             "port":"8950",
             "WorkerNumbers" : 4,
             "WorkType" : "funprofilerAlone"
         }
     ],
     "MasterServer":{
-        "ip":"10.11.144.31",
+        "ip":"10.11.145.125",
         "port":"6950"
     },
     "Database":{
-        "Address":"mongodb://10.11.144.31:27171",
+        "Address":"mongodb://10.11.145.125:27171",
         "DBName":"MyDB",
         "Collection":{
             "MainTable":"MainTable",
@@ -30,10 +30,10 @@
         }
     },
     "Minioconfig":{
-        "MinioServerPath":"10.11.144.31:8001",
+        "MinioServerPath":"10.11.145.125:8001",
         "MinioBucket":"analyzedata",
         "MinioRawBucket":"rawdata",
-        "MergePath":"D:/MasterAnalyzePath/MergeData",
+        "MergePath":"F:/MasterAnalyzePath/MergeData",
         "UserName":"cdr",
         "PassWord":"cdrmm666!@#"
     },
