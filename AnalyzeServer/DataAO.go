@@ -56,6 +56,7 @@ type ConfigData struct {
 	Database     DBConfig
 	Minioconfig  MinioConfig
 	RobotUrl     string
+	AnalyzeMode  string //解析模式，默认是单机本地模式，可调整为分布式联网模式
 }
 
 type ClientState struct {
