@@ -29,10 +29,10 @@ func HandleConnection(conn net.Conn) {
 		}
 		if len(buffer) != 0 {
 			res := string(buffer[:n])
-			if strings.Contains(res, "startanalyze") {
+			if strings.Contains(res, "startgather") {
 				Logs.Loggers().Print("接收到开始采集消息----", res)
-				beginMsg := strings.Split(res, "?")[1] //startanalyze?...
-				go AnalyzeServer.AnalyzeRequest(beginMsg)
+				beginMsg := strings.Split(res, "?")[1] //startgather?...
+				go AnalyzeServer.StartGatherRequest(beginMsg)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "requestanalyze") {
@@ -57,10 +57,10 @@ func HandleConnection(conn net.Conn) {
 				Logs.Loggers().Print("接收到解析器请求消息----", res)
 				message = "ok"
 				conn.Write([]byte(message))
-			} else if strings.Contains(res, "stopanalyze") {
+			} else if strings.Contains(res, "stopgather") {
 				Logs.Loggers().Print("接收到停止采集消息----", res)
 				stopMsg := strings.Split(res, "?")[1]
-				go AnalyzeServer.StopAnalyzeRequest(stopMsg)
+				go AnalyzeServer.StopGatherRequest(stopMsg)
 				message = "ok"
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "cancelanalyze") { //todo:中途取消采集

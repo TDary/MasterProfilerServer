@@ -11,7 +11,7 @@ import (
 )
 
 // 停止采集信号
-func StopAnalyzeRequest(mes string) {
+func StopGatherRequest(mes string) {
 	var data EndData
 	str1 := strings.Split(mes, "&")
 	for i := 0; i < len(str1); i++ {
@@ -87,8 +87,8 @@ func AnalyzeBegin(analze string, databaseData string) {
 	}
 }
 
-// 开始采集并解析的消息
-func AnalyzeRequest(data string) {
+// 处理开始采集以及采集过程消息，并在最后更新源文件列表
+func StartGatherRequest(data string) {
 	//此处作为消费者,同时调用DataBase创建数据库表
 	mtable := ReceiveMes(data)
 	if mtable.UUID == "" {
@@ -179,7 +179,18 @@ func AddOneForSubTable(data string) string { //返回文件解析类型
 			subt.UUID = uid[1]
 		} else if strings.Contains(spldata[i], "rawfile") {
 			file := strings.Split(spldata[i], "=")
-			subt.RawFile = file[1]
+			if len(file) < 2 {
+				// 如果没有rawfile,说明不是用raw文件解析
+			} else {
+				subt.RawFile = file[1]
+			}
+		} else if strings.Contains(spldata[i], "snapfile") {
+			file := strings.Split(spldata[i], "=")
+			if len(file) < 2 {
+				// 如果没有snapfile,说明不是用snap快照文件解析
+			} else {
+				subt.SnapFile = file[1]
+			}
 		} else if strings.Contains(spldata[i], "analyzetype") {
 			anatype := strings.Split(spldata[i], "=")
 			anaType = anatype[1]

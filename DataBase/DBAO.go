@@ -20,6 +20,7 @@ type MainTable struct {
 	GameName        string
 	CaseName        string
 	RawFiles        []string
+	SnapFiles       []string
 	UnityVersion    string
 	AnalyzeBucket   string
 	CollectorIp     string
@@ -36,6 +37,7 @@ type MainTable struct {
 type SubTable struct {
 	UUID         string
 	RawFile      string
+	SnapFile     string
 	AnalyzeIP    string
 	State        int
 	AnalyzeBegin int64

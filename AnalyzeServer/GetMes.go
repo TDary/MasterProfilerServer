@@ -33,7 +33,7 @@ func GetAnalyzeData(data string) AnalyzeData {
 	return res
 }
 
-//接受开始采集消息
+// 接受开始采集消息
 func ReceiveMes(mes string) DataBase.MainTable {
 	var mtable DataBase.MainTable
 	var collectip string
@@ -50,6 +50,12 @@ func ReceiveMes(mes string) DataBase.MainTable {
 			if files[1] != "" {
 				fs := strings.Split(files[1], ",")
 				mtable.RawFiles = fs
+			}
+		} else if strings.Contains(str1[i], "snapFiles") { //解析sanpfiles
+			files := strings.Split(str1[i], "=")
+			if files[1] != "" {
+				fs := strings.Split(files[1], ",")
+				mtable.SnapFiles = fs
 			}
 		} else if strings.Contains(str1[i], "gameName") { //解析gamename
 			na := strings.Split(str1[i], "=")
@@ -90,6 +96,9 @@ func ReceiveMes(mes string) DataBase.MainTable {
 	if len(mtable.RawFiles) == 0 {
 		mtable.RawFiles = nil
 	}
+	if len(mtable.SnapFiles) == 0 {
+		mtable.SnapFiles = nil
+	}
 	res := DataBase.FindMainTableByUUID(mtable.UUID)
 	if res != nil {
 		Logs.Loggers().Printf("数据库中已存在UUID:%s，不能重复插入", mtable.UUID)
@@ -104,6 +113,9 @@ func GetSubData(mtable DataBase.MainTable) {
 	if len(mtable.RawFiles) == 0 {
 		return
 	}
+	if len(mtable.SnapFiles) == 0 {
+		return
+	}
 	for i := 0; i < len(mtable.RawFiles); i++ {
 		var stable DataBase.SubTable
 		stable.UUID = mtable.UUID
@@ -114,7 +126,7 @@ func GetSubData(mtable DataBase.MainTable) {
 	}
 }
 
-//插入一条子表任务
+// 插入一条子表任务
 func InsertSubTable(mtable DataBase.MainTable, rawfile string) {
 	var stable DataBase.SubTable
 	stable.UUID = mtable.UUID
@@ -124,7 +136,7 @@ func InsertSubTable(mtable DataBase.MainTable, rawfile string) {
 	DataBase.InsertSub(stable)
 }
 
-//插入一条子表任务
+// 插入一条子表任务
 func InsertSubTableBySub(mtable DataBase.SubTable) {
 	DataBase.InsertSub(mtable)
 }
