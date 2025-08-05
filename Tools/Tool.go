@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -93,17 +92,20 @@ func SendRobotMsg(url string, msg string) {
 }
 
 // 使用AES对数据进行解密
-func Decrypt(data, key []byte) ([]byte, error) { //密钥：eb3386a8a8f57a579c93fdfb33ec9471
+func Decrypt(ciphertext, key []byte) ([]byte, error) { //密钥：eb3386a8a8f57a579c93fdfb33ec9471
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		return nil, err
 	}
-	if len(data) < aes.BlockSize {
-		return nil, fmt.Errorf("ciphertext too short")
-	}
-	iv := data[:aes.BlockSize]
-	data = data[aes.BlockSize:]
-	stream := cipher.NewCFBDecrypter(block, iv)
-	stream.XORKeyStream(data, data)
-	return data, nil
+
+	// 分离Nonce和密文
+	nonce := ciphertext[:aes.BlockSize]
+	actualCiphertext := ciphertext[aes.BlockSize:]
+
+	// CTR流解密
+	stream := cipher.NewCTR(block, nonce)
+	plaintext := make([]byte, len(actualCiphertext))
+	stream.XORKeyStream(plaintext, actualCiphertext)
+
+	return plaintext, nil
 }
