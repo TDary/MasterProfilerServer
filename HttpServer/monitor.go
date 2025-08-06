@@ -38,7 +38,7 @@ func HandleConnection(conn net.Conn) {
 				conn.Write([]byte(message))
 			} else if strings.Contains(res, "requestanalyze") {
 				Logs.Loggers().Print("接收到申请解析源文件的消息----", res)
-				ana := strings.Split(res, "?")[1] //requestanalyze?uuid=test&rawfile=123123.zip&rawfilename=uuid/1231.zip&unityversion=12313&analyzebucket=ads&analyzeType=
+				ana := strings.Split(res, "?")[1] //requestanalyze?uuid=test&rawfile=123123.zip&objectname=uuid/1231.zip&unityversion=12313&analyzebucket=ads&analyzeType=
 				go StorageAnalyzeParse(ana)
 				go AnalyzeServer.AnalyzeBegin(res, ana)
 				message = "ok"

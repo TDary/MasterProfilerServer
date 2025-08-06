@@ -130,7 +130,7 @@ func MergeSimple(maintable DataBase.MainTable, dataPath string) {
 	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
-//合并funprofilerAlone数据，独立二进制文件解析模式
+// 合并funprofilerAlone数据，独立二进制文件解析模式
 func MergeFunStanderAlone(maintable DataBase.MainTable, dataPath string) {
 	var allFunRow Data.AllCaseFunRowAlone
 	var allCaseFunName Data.ListCaseFunName
@@ -593,7 +593,7 @@ func CheckSubAnalyzeState(subt DataBase.SubTable, mt DataBase.MainTable) {
 				data.WriteString(mt.UUID)
 				data.WriteString("&rawfile=")
 				data.WriteString(subt.RawFile)
-				data.WriteString("&rawfilename=")
+				data.WriteString("&objectname=")
 				data.WriteString(mt.UUID + "/" + subt.RawFile)
 				data.WriteString("&unityversion=")
 				data.WriteString(mt.UnityVersion)

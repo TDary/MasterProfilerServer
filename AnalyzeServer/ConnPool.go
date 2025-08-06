@@ -47,6 +47,7 @@ func GetConn(ip string, machine string) net.Conn {
 func CloseConnect(ip string, machine string) {
 	for _, val := range allconnector {
 		if val.Ip == ip && machine == val.Marchine {
+			val.Conn.Close()
 			val.Conn = nil
 		}
 	}
