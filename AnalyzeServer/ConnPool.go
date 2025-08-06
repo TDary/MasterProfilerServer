@@ -36,19 +36,18 @@ func AddConnectior(conn net.Conn, machine string) {
 // 获取Conn连接池对象
 func GetConn(ip string, machine string) net.Conn {
 	for _, val := range allconnector {
-		if val.Ip == ip && machine == val.Marchine {
+		if val.Ip == ip && machine == val.Marchine && !val.Realease {
 			return val.Conn
 		}
 	}
 	return nil
 }
 
-// 断开连接，去除连接池中的连接
+// 标记为断开连接的状态
 func CloseConnect(ip string, machine string) {
 	for _, val := range allconnector {
 		if val.Ip == ip && machine == val.Marchine {
-			val.Conn.Close()
-			val.Conn = nil
+			val.Realease = true //标记为释放连接
 		}
 	}
 }

@@ -92,4 +92,5 @@ type ConnectPool struct { //以IP为区分，存储连接池对象
 	Ip       string
 	Marchine string //机器标识
 	Conn     net.Conn
+	Realease bool //是否释放连接
 }

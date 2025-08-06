@@ -515,7 +515,8 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 	DataBase.InsertFunNamePath(insertCaseFunPath)
 	DataBase.ModifyMain(maintable.UUID, 1, totalFrame)
 	//成功合入库上报
-	Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
+	Logs.Loggers().Print("UUID:", maintable.UUID, "案例解析合并完成")
+	// Tools.SendRobotMsg(config.RobotUrl, "UUID:"+maintable.UUID+"案例解析合并完成")
 }
 
 // 开始合并且入库操作
