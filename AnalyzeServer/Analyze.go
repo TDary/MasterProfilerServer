@@ -79,8 +79,8 @@ func AnalyzeBegin(analze string, databaseData string) {
 				Logs.Loggers().Print("发送解析消息失败----", err.Error())
 				break
 			} else {
-				//Logs.Loggers().Print("发送请求解析成功~")
-				// Logs.Loggers().Print("发送长度：", n)
+				Logs.Loggers().Print("发送解析器的解析请求成功~")
+				Logs.Loggers().Print("发送长度：", n)
 				break
 			}
 		}
