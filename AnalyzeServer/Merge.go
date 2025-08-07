@@ -295,6 +295,7 @@ func MergeFun(maintable DataBase.MainTable, dataPath string) {
 		var caseFunRow DataBase.CaseFunRow
 		caseFunRow.UUID = maintable.UUID
 		caseFunRow.Name = vals.Name
+		caseFunRow.UnityObject = vals.Unityobject
 		if caseFunRow.Name == "Main Thread" { //暂时不放入这个数据，以后要的话再说
 			totalFrame = len(vals.Frames)
 			continue

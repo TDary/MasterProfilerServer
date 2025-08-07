@@ -60,6 +60,7 @@ type CaseFunRowAlone struct {
 type CaseFunRow struct {
 	UUID         string
 	Name         string
+	UnityObject  string
 	AvgValidTime int32
 	Frames       []FunRowInfo
 }
