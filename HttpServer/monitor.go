@@ -26,7 +26,7 @@ func HandleConnection(conn net.Conn) {
 			//断开连接，清除池子
 			Logs.Loggers().Print("连接断开，清除连接池中的连接：", remoteIp, ConMachine)
 			AnalyzeServer.CloseConnect(remoteIp, ConMachine)
-			break
+			return
 		}
 		if len(buffer) != 0 {
 			res := string(buffer[:n])
