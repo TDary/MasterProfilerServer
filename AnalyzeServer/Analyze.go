@@ -30,6 +30,9 @@ func StopGatherRequest(mes string) {
 
 // 检测最后一份源文件
 func GetLastRawFileIsSend(uuid string) int {
+	if stopMsg == nil {
+		return -1 //没有停止采集的信号
+	}
 	for _, val := range stopMsg {
 		if val.UUID == uuid {
 			return 1
