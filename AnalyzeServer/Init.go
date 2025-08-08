@@ -7,9 +7,6 @@ import (
 	"MasterServer/Tools"
 	"encoding/json"
 	"os"
-	"os/exec"
-	"syscall"
-	"time"
 )
 
 func InitServer() string {
@@ -32,8 +29,7 @@ func InitServer() string {
 	}
 	switch config.AnalyzeMode {
 	case "local":
-		Logs.Loggers().Print("当前解析模式为本地单机模式，启动MasterClient客户端")
-		go StartMasterClient()
+		Logs.Loggers().Print("当前解析模式为本地单机模式，需要启动MasterClient客户端")
 	case "distributed":
 		Logs.Loggers().Print("当前解析模式为分布式联网模式。")
 	}
@@ -60,15 +56,15 @@ func InitServer() string {
 	return serUrl
 }
 
-// 本地解析模式下启用 且程序配置正确位置
-func StartMasterClient() {
-	time.Sleep(5 * time.Second) //等一会 主服务器优先启动
-	Logs.Loggers().Print("Start MasterClient server process----")
-	cmd := exec.Command("./MasterClient.exe")
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-	_, err := cmd.CombinedOutput()
-	if err != nil {
-		Logs.Loggers().Fatal("Failed to start MasterClient server.", err.Error())
-		return
-	}
-}
+// // 本地解析模式下启用 且程序配置正确位置
+// func StartMasterClient() {
+// 	time.Sleep(5 * time.Second) //等一会 主服务器优先启动
+// 	Logs.Loggers().Print("Start MasterClient server process----")
+// 	cmd := exec.Command("./MasterClient.exe")
+// 	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+// 	_, err := cmd.CombinedOutput()
+// 	if err != nil {
+// 		Logs.Loggers().Fatal("Failed to start MasterClient server.", err.Error())
+// 		return
+// 	}
+// }
